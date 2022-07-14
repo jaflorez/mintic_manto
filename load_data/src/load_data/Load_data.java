@@ -61,16 +61,16 @@ public class Load_data {
         JSONParser parser = new JSONParser();
         try
         {
-            Object object = parser.parse(new FileReader("D:\\CLARO\\mintic\\Documentacion\\parametros.json"));
+            Object object = parser.parse(new FileReader("D:\\CLARO\\mintic\\parametros.json"));
             JSONObject jsonObject = (JSONObject)object;
             ruta_carga = (String) jsonObject.get("ruta_carga");
             Load_data load_data = new Load_data();
-//            load_data.load_generador_scripts(ruta_carga+"\\Generador de Script Mintic.xlsm");
- //           load_data.load_consolidado(ruta_carga+"\\CONSOLIDADO.xlsx");
+ //           load_data.load_generador_scripts(ruta_carga+"\\Generador de Script Mintic.xlsm");
+//            load_data.load_consolidado(ruta_carga+"\\CONSOLIDADO.xlsx");
             String[] tokens  =  load_data.generar_tokens();
-         //   load_data.actualizar_ap(tokens[1],"https://prycnmap1.claro.net.co/api/v2/devices/?limit=0");
-          //  load_data.actualizar_ap(tokens[2],"https://prycnmap2.claro.net.co/api/v2/devices/?limit=0");
-            load_data.actualizar_rs(tokens[0],"https://prycnmrs1.claro.net.co/api/v2/devices/?limit=0");
+            load_data.actualizar_ap(tokens[1],"https://prycnmap1.claro.net.co/api/v2/devices/?limit=0",1);
+            load_data.actualizar_ap(tokens[2],"https://prycnmap2.claro.net.co/api/v2/devices/?limit=0",2);
+          //  load_data.actualizar_rs(tokens[0],"https://prycnmrs1.claro.net.co/api/v2/devices/?limit=0");
             System.out.println("Fin");
         }
         catch(FileNotFoundException fe)
@@ -83,7 +83,7 @@ public class Load_data {
     public void load_generador_scripts(String ruta){
         FileInputStream fis = null;
         System.out.println("RTa "+ ruta);
-        String jdbcURL = "jdbc:mysql://localhost:3306/mintic_manto?useSSL=false";
+        String jdbcURL = "jdbc:mysql://localhost:3306/mintic?useSSL=false";
         String username = "root";
         String password = "admin";
         int batch_size = 20;
@@ -101,7 +101,7 @@ public class Load_data {
             XSSFWorkbook myWorkBook = new XSSFWorkbook (fis);
             XSSFSheet mySheet = myWorkBook.getSheetAt(0);
             Iterator<Row> rowIterator = mySheet.iterator();
-            String sql = "INSERT INTO mintic_manto.generador_scripts(id_mintic,id_beneficiario,ot,codigo_servicio,llave,nombre_municipio,coddanemuni,nombre_departamento,coddanedepar,nombre_centro_pob,coddaneinstitucionedu,matricula,bw_down_kbps,bw_up_kbps,total_bw,latitud,longitud,red,ip_ether1,mask_ether1,pe_wan,vlan_ether1,ip_ether2,mask_ether2,red_indoor,ip_indoor,mask_ether3,vlan_ether3,pcs_pool_1,ip_outdoor1,ip_outdoor2,mask_ether4_5,vlan_ether4_5,pcs_pool_2,bts_estacion_base,tipo_equipo,equipo_ipran,puerto,pe_capa_3,interfaz_pe_capa_3,cambios,obs_general,grupo,fecha_reconfigurar,vlan_wan,aliado_confi,nombre_ing_confi,fecha_config,estado_config,fecha_visita_s_o,estado_sharepoint,new_pem_aliado,proveedor_um_tercero,aliado_campo,pim_,pim_contacto,nombre_pem,hora_inicio,hora_fin,ultra_causa_no_exitosa,justificacion_estado_pem,fecha_pem,estado_pem,backup_fw_ingenio,pem_estado_calidad,sistema_electrico,kill_,prueba_de_aislamineto_banda_ku,tecnologia,nombre_ing_de_soporte,hora_inicio_mig,hora_fin_mig,ultra_causa_mig,justificacion_estado_migracion,fecha_migracion,estado_migracion,nombre_ing_sop,hora_inicio_sop,hora_fin_sop,justificacion_estado_sop,fecha_sop,estado_soporte_s_o,nombre_ing_de_pruebas,hora_inicio_prueba,hora_fin_pruebas,justificacion_estado_pruebas,fecha_pruebas,estado_pruebas,nombre_ing_de_mtto,hora_inicio_mtto,hora_fin_mtto,ultra_causa_mtto,justificacion_estado_mtto,fecha_mtto,estado_mtto) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
+            String sql = "INSERT INTO mintic.generador_scripts(id_mintic,id_beneficiario,ot,codigo_servicio,llave,nombre_municipio,coddanemuni,nombre_departamento,coddanedepar,nombre_centro_pob,coddaneinstitucionedu,matricula,bw_down_kbps,bw_up_kbps,total_bw,latitud,longitud,red,ip_ether1,mask_ether1,pe_wan,vlan_ether1,ip_ether2,mask_ether2,red_indoor,ip_indoor,mask_ether3,vlan_ether3,pcs_pool_1,ip_outdoor1,ip_outdoor2,mask_ether4_5,vlan_ether4_5,pcs_pool_2,bts_estación_base,tipo_equipo,equipo_ipran,puerto,pe_capa_3,interfaz_pe_capa_3,new_bst,tipo_equipo2,new_equipo_,new_pto,capa_3,interfaz,rediseño,rediseño2,cambios,obs_general,grupo,fecha_reconfigurar,vlan_wan,aliado_confi,nombre_ing_confi,fecha_config,estado_config,fecha_visita_s_o,estado_sharepoint,new_pem_aliado,proveedor_um_tercero,aliado_campo,pim_,pim_contacto,nombre_pem,hora_inicio,hora_fin,ultra_causa_no_exitosa,justificacion_estado_pem,fecha_pem,estado_pem,backup_fw_ingenio,pem_estado_calidad,sistema_electrico,kill_,prueba_de_aislamineto_banda_ku,tecnologia,nombre_ing_de_soporte,hora_inicio_mig,hora_fin_mig,ultra_causa_mig,justificacion_estado_migracion,fecha_migracion,estado_migracion,nombre_ing_sop,hora_inicio_sop,hora_fin_sop,justificacion_estado_sop,fecha_sop,estado_soporte_s_o,nombre_ing_de_pruebas,hora_inicio_prueba,hora_fin_pruebas,justificacion_estado_pruebas,fecha_pruebas,estado_pruebas,nombre_ing_de_mtto,hora_inicio_mtto,hora_fin_mtto,ultra_causa_mtto,justificacion_estado_mtto,fecha_mtto,estado_mtto)VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
             PreparedStatement statement = connection.prepareStatement(sql); 
             rowIterator.next(); 
             rowIterator.next(); 
@@ -110,7 +110,7 @@ public class Load_data {
             rowIterator.next();
             while (rowIterator.hasNext()) {
                 Row row = rowIterator.next();
-                for(int contador_fld=1;contador_fld<=95;contador_fld++){
+                for(int contador_fld=1;contador_fld<=103;contador_fld++){
                     if(row.getCell(contador_fld) != null ){
                         switch (row.getCell(contador_fld).getCellTypeEnum()){
                             case BLANK:
@@ -161,7 +161,8 @@ public class Load_data {
     }
     public void load_consolidado(String ruta){
         FileInputStream fis = null;
-        String jdbcURL = "jdbc:mysql://localhost:3306/mintic_manto?useSSL=false";
+        System.out.println("Cargando Consolidado");
+        String jdbcURL = "jdbc:mysql://localhost:3306/mintic?useSSL=false";
         String username = "root";
         String password = "admin";
         int batch_size = 20;
@@ -169,6 +170,7 @@ public class Load_data {
         Connection connection = null;
         try {
             System.out.println("Inicio");
+            
             connection = DriverManager.getConnection(jdbcURL, username, password);
             System.out.println("Inicio 01");
             if (connection == null){
@@ -179,44 +181,38 @@ public class Load_data {
             File myFile = new File(ruta);
             fis = new FileInputStream(myFile);
             XSSFWorkbook myWorkBook = new XSSFWorkbook (fis);
-            System.out.println("Arc 03");
-            XSSFSheet mySheet = myWorkBook.getSheetAt(0);
+            XSSFSheet mySheet = myWorkBook.getSheet("Unificados");
             Iterator<Row> rowIterator = mySheet.iterator();
-            String sql = "INSERT INTO mintic_manto.consolidado(id_unificado,nombre_sede,bts_original,equipo_acceso_original,puerto_original,bts_diseno_mw,equipo_acceso,puerto_1,ip_red,conectante,nemonico,referencia,slot,puerto_2,sitio_a,sitio_b,gateway,vlan,mask,ip_sitio_a_local_bts,ip_sitio_b_remoto_cd,gestion_switch_cambium,5_equipo_alu_origen_servicio,3_sap_id_origen_7705,6_nombre_de_interfaz_en_7750,8_ip_de_interfaz_en_7750,fase,cierre_um,id_beneficiario,estado_operación,comentarios,archivo,filtro_temp2)VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
+            String sql = "INSERT INTO mintic.consolidado(id_unificado,nombre_sede,bts_original,equipo_acceso_original,puerto_original,bts_diseno_mw,equipo_acceso,puerto_1,ip_red,conectante,nemonico,referencia,slot,puerto_2,sitio_a,sitio_b,gateway,vlan,mask,ip_sitio_a_local_bts,ip_sitio_b_remoto_cd,gestion_switch_cambium,5_equipo_alu_origen_servicio,3_sap_id_origen_7705,6_nombre_de_interfaz_en_7750,8_ip_de_interfaz_en_7750,fase,cierre_um,id_beneficiario,estado_operación,comentarios,archivo,filtro_temp2)VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
             PreparedStatement statement = connection.prepareStatement(sql); 
-            rowIterator.next(); 
-            rowIterator.next(); 
             rowIterator.next();
             rowIterator.next();
-            rowIterator.next();
-            System.out.println("For");
+            int contador_xls;
+            System.out.println("Inicio Cargue");
             while (rowIterator.hasNext()) {
                 Row row = rowIterator.next();
                 for(int contador_fld=1;contador_fld<=33;contador_fld++){
-                    System.out.print(contador_fld+":\t");
-                    if(row.getCell(contador_fld) != null ){
-                        System.out.print(row.getCell(contador_fld).getCellTypeEnum()+"\t");
-                        switch (row.getCell(contador_fld).getCellTypeEnum()){
+                    contador_xls = contador_fld -1;
+                    if(row.getCell(contador_xls) != null ){
+                        switch (row.getCell(contador_xls).getCellTypeEnum()){
                             case BLANK:
-                                System.out.print("blank:\t");
                                 statement.setNull(contador_fld, java.sql.Types.NULL);
                                 break;
                             case STRING:
-                                statement.setString(contador_fld, row.getCell(contador_fld).getStringCellValue());
+                                statement.setString(contador_fld, row.getCell(contador_xls).getStringCellValue());
                                 break;
                             case NUMERIC:
-                                statement.setString(contador_fld,Double.toString(row.getCell(contador_fld).getNumericCellValue()));
+                                statement.setString(contador_fld,String.format("%.0f",row.getCell(contador_xls).getNumericCellValue()));
                                 break;
                             case BOOLEAN:
-                                statement.setString(contador_fld, "Bool");
+                                statement.setString(contador_fld, "");
                                 break;
                             default:
-                                statement.setString(contador_fld, "str");
+                                statement.setString(contador_fld, "");
                                 break;
                        }
                     }
                     else{
-                        System.out.println("Nulo");
                         statement.setNull(contador_fld, java.sql.Types.NULL);
                     }
                 }
@@ -277,7 +273,7 @@ public class Load_data {
      */
     public void actualizar_rs(String token,String url_api){
     	URL url;
-        String jdbcURL = "jdbc:mysql://localhost:3306/mintic_manto?useSSL=false";
+        String jdbcURL = "jdbc:mysql://localhost:3306/mintic?useSSL=false";
         String username = "root";
         String password = "admin";
         int batch_size = 20;
@@ -373,10 +369,10 @@ public class Load_data {
 
 
     }
-    public void actualizar_ap(String token,String url_api)
+    public void actualizar_ap(String token,String url_api,int server_data)
     {
     	URL url;
-        String jdbcURL = "jdbc:mysql://localhost:3306/mintic_manto?useSSL=false";
+        String jdbcURL = "jdbc:mysql://localhost:3306/mintic?useSSL=false";
         String username = "root";
         String password = "admin";
         int batch_size = 20;
@@ -425,7 +421,7 @@ public class Load_data {
             JSONObject json = (JSONObject) parser.parse(data); 
             JSONArray data_js =(JSONArray) json.get("data");
             Iterator<JSONObject> iterator = data_js.iterator();
-            String sql = "INSERT INTO mintic_manto.tmp_access_point(description_ap,name_ap,ip_ap,network,product,msn,site,mac,parent_mac,site_id) VALUES(?,?,?,?,?,?,?,?,?,?);";
+            String sql = "INSERT INTO tmp_access_point(description_ap,name_ap,ip_ap,network,product,msn,site,mac,parent_mac,site_id,server_data) VALUES(?,?,?,?,?,?,?,?,?,?,?);";
             PreparedStatement statement = connection.prepareStatement(sql); 
             int size_batch = 20;
             int contador = 0;
@@ -443,6 +439,7 @@ public class Load_data {
                     statement.setString(8, (jsChildObj.get("mac") != null)? jsChildObj.get("mac").toString():"");
                     statement.setString(9, (jsChildObj.get("parent_mac") != null)? jsChildObj.get("parent_mac").toString():"");
                     statement.setString(10,(jsChildObj.get("site_id") != null)? jsChildObj.get("site_id").toString():"");
+                    statement.setInt(11,server_data);
                     statement.addBatch();
                     contador++;
                 }
