@@ -1,0 +1,116 @@
+{
+  "id_beneficiario": 26466,
+  "id_mintic": 100056789,
+  "nombre_ct_pob": "CORREG. EL DOS",
+  "municipio": "TURBO",
+  "departamento": "ANTIOQUIA",
+  "vlan": 334,
+  "radio_cd": {
+    "status": "online",
+    "lan_mode_status": "full",
+    "lan_speed_status": "1000 Mpbs",
+    "dl_rssi": -67,
+    "dl_snr": 24,
+    "mac": "00:04:56:42:6E:26",
+    "ap_mac": "00:04:56:46:AF:5A",
+    "tower": "ANT.El Totumo"
+  },
+  "router_mk": {
+    "interfaces": [
+      {
+        "address": "10.167.139.232/30",
+        "interface": "vlan-WAN",
+        "network": "10.167.139.232"
+      },
+      {
+        "address": "172.25.227.57/29",
+        "interface": "bridge_LAN",
+        "network": "172.25.227.56"
+      }
+    ],
+    "conectividad": [
+      {
+        "full_duplex": "true",
+        "name": "ether1-WAN",
+        "running": "true",
+        "rx_fcs_error": 0,
+        "speed": "100Mbps"
+      },
+      {
+        "full_duplex": "true",
+        "name": "ether3-AP-Indoor",
+        "running": "true",
+        "rx_fcs_error": 0,
+        "speed": "100Mbps"
+      },
+      {
+        "full_duplex": "true",
+        "name": "ether4-AP-Outdoor1",
+        "running": "true",
+        "rx_fcs_error": 0,
+        "speed": "100Mbps"
+      },
+      {
+        "full_duplex": "true",
+        "name": "ether4-AP-Outdoor2",
+        "running": "true",
+        "rx_fcs_error": 0,
+        "speed": "100Mbps"
+      }
+    ]
+  },
+  "aps": [
+    {
+      "tipo": "INT",
+      "name": "10848-VZVF898-AP-EXT2",
+      "mac": "BC:A9:93:0C:7B:69",
+      "status": "online",
+      "site": "10848-VZVF898 TURBO EL TRES"
+    },
+    {
+      "tipo": "EXT_1",
+      "name": "10848-VZVF898-AP-EXT2",
+      "mac": "BC:A9:93:0C:7B:69",
+      "status": "online",
+      "site": "10848-VZVF898 TURBO EL TRES"
+    },
+    {
+      "tipo": "EXT_2",
+      "name": "10848-VZVF898-AP-EXT2",
+      "mac": "BC:A9:93:0C:7B:69",
+      "status": "online",
+      "site": "10848-VZVF898 TURBO EL TRES"
+    }
+  ],
+  "radio_bts": {
+    "status": "online",
+    "lan_mode_status": "full",
+    "lan_speed_status": "1000 Mpbs",
+    "radio": {
+      "dl_rssi": -67,
+      "dl_snr": 24
+    },
+    "mac": "00:04:56:42:6E:26"
+  },
+  "switch_bts": {
+	"status":"online"  
+    "ip": "10.68.224.14",
+    "mac": "58:C1:7A:FA:D9:80",
+    "tower": "ANT.El Totumo",
+    "name": "ANT-EL-TOTUMO"
+  },
+  "responsables": [
+    {
+      "id_responsable": 101001,
+      "name": "Pedro Antonio Ocampo",
+      "phone": "45875",
+      "email": "correo@servidor.com"
+    },
+    {
+      "id_responsable": 101002,
+      "name": "Marta Marina Ocampo",
+      "phone": "45875",
+      "email": "correo@servidor.com"
+    }
+  ]
+}
