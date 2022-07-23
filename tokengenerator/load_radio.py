@@ -130,7 +130,8 @@ def main():
         print(api_call_response.text)
         print("--"*20)
         
-        print("--AP 1-- ")
+        print("--AP 1-- "*20)
+        print(data[ID_AP_SR1])
         api_call_headers = {'Authorization': 'Bearer ' + data[ID_AP_SR1]}
         api_call_response = requests.get('https://prycnmap1.claro.net.co/api/v2/devices/BC:A9:93:0C:7B:69/statistics?fields=name,mac,status,site', headers=api_call_headers, verify=False)        
         print(api_call_response.text)

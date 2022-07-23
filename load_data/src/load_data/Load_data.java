@@ -450,14 +450,12 @@ public class Load_data {
             token = client.accessToken(request, OAuthJSONAccessTokenResponse.class)
                     .getAccessToken();
             System.out.println("Tk:" + token );
-            
         } catch (OAuthSystemException ex) { 
             Logger.getLogger(Load_data.class.getName()).log(Level.SEVERE, null, ex);
         } catch (OAuthProblemException ex) {
             Logger.getLogger(Load_data.class.getName()).log(Level.SEVERE, null, ex);
         }
         return token;
-    
     }
     public void actualizar_aps(Connection connection){
         try {

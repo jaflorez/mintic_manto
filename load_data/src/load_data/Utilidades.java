@@ -40,11 +40,8 @@ public class Utilidades {
    }
    public static Connection getConection(String jdbcURL,String username,String password) throws SQLException{
       Connection connection;
-//    String jdbcURL = "jdbc:mysql://localhost:3306/mintic?useSSL=false";
-//    String username = "root";
-//    String password = "admin";
-        connection = DriverManager.getConnection(jdbcURL, username, password);
-        return connection;
+      connection = DriverManager.getConnection(jdbcURL, username, password);
+      return connection;
    }
     
 }
