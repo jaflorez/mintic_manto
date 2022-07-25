@@ -90,7 +90,6 @@ public class ConsultaRestUtil {
     public Radio consultar_rd_cd(String url_p,String mac,String token) {
     	Radio radio = null;
 		String url_api = url_p.replace("[MAC]", mac);
-		System.out.println(url_api);
     	URL url;
         try {
             TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager(){
@@ -170,7 +169,6 @@ public class ConsultaRestUtil {
     public Switch_bts consultar_switch_bts(String url_p,String mac,String token) {
     	Switch_bts  switch_bts = null;
 		String url_api = url_p.replace("[MAC]", mac);
-		System.out.println(url_api);
     	URL url;
         try {
             TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager(){
@@ -207,8 +205,7 @@ public class ConsultaRestUtil {
             bufferedReader.close();
             JSONParser parser = new JSONParser();  
             String data = jsonResponseData.toString();
-            JSONObject json = (JSONObject) parser.parse(data);
-            System.out.println(json.toString());
+            JSONObject json = (JSONObject) parser.parse(data);            
             JSONArray data_js_arr =(JSONArray) json.get("data");
             JSONObject jsCld = (JSONObject) data_js_arr.get(0);
             switch_bts = new Switch_bts();
@@ -247,8 +244,6 @@ public class ConsultaRestUtil {
     public Radio consultar_rd_bts(String url_p,String mac,String token) {
     	Radio radio = null;
 		String url_api = url_p.replace("[MAC]", mac);
-		System.out.println("ap"+url_api);
-		System.out.println("tk"+token);
     	URL url;
         try {
             TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager(){
@@ -285,8 +280,7 @@ public class ConsultaRestUtil {
             bufferedReader.close();
             JSONParser parser = new JSONParser();  
             String data = jsonResponseData.toString();
-            JSONObject json = (JSONObject) parser.parse(data);
-            System.out.println(json.toString());
+            JSONObject json = (JSONObject) parser.parse(data);            
             JSONArray data_js_arr =(JSONArray) json.get("data");
             JSONObject jsCld = (JSONObject) data_js_arr.get(0);
             radio = new Radio();
@@ -374,7 +368,6 @@ public class ConsultaRestUtil {
             accessPoint.setStatus(jsCld.get("status").toString());
             accessPoint.setTipo(tipo);
             http.disconnect();			
-            
         } catch (NoSuchAlgorithmException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -396,11 +389,7 @@ public class ConsultaRestUtil {
 		}
 		finally {
 			
-			
 		}
-		
-		
-		
 		return accessPoint;
 	}
 

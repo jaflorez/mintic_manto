@@ -13,6 +13,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+
 import com.claro.WSMinticAutogestion.controller.Controller;
 import com.claro.WSMinticAutogestion.json.CentroDigital;
 import com.claro.WSMinticAutogestion.util.BufferedUtil;
@@ -40,6 +43,7 @@ public class WSMinticAutogestion {
 	  new BufferedUtil();
 	  CentroDigital objCentro = new CentroDigital();
 	  BufferedReader rd = new BufferedReader(new InputStreamReader(idConsulta));
+	  JSONParser jp = new JSONParser();
 	  
 	  
 	  String line = "";
@@ -49,9 +53,13 @@ public class WSMinticAutogestion {
 			  jsonRequest = jsonRequest+line.trim();
 		  }
 		  System.out.println("Valor JSON Enviado: "+jsonRequest);
+		  JSONObject jso = (JSONObject)jp.parse(jsonRequest);
+		  String id = jso.get("id").toString();
+		  
+		  
 		  controller = new Controller();
 		  try {
-			  objCentro = controller.consultarCentroDigital(jsonRequest);
+			  objCentro = controller.consultarCentroDigital(id);
 			  
 		  } catch (Exception e) {
 			  e.printStackTrace();

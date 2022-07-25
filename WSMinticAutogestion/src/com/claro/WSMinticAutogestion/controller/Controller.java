@@ -206,12 +206,6 @@ public class Controller {
     	}
     	centroDigital.setAps(listaAP);
     	centroDigital.setRadio_cd(rd_cd);
-    	
-    	for(ResponsableVO vo:centroDigital.getResponsables()) {
-    		System.out.println(vo.getName_resp());
-    		
-    	}
-    	
     	centroDigital.setResponsables(centroDigital.getResponsables());
     	if(rd_cd != null) {
     		if(rd_cd.getAp_mac() != null ) {

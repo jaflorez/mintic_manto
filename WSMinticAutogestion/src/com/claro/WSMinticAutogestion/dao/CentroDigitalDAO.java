@@ -23,7 +23,6 @@ public class CentroDigitalDAO {
 
 		CentroDigitalVO centroDigitalVO = null;
 		if(this.connection.isValid(10)) {
-			System.out.println("busco");
 			if(id_beneficiario.length() == 5) {
 				preparedStatement = this.connection.prepareStatement("SELECT id_beneficiario,llave,id_mintic,nombre_ct_pob,municipio,departamento,vlan,ip_router,server_data from centro_digital where id_beneficiario = ?");
 			}
