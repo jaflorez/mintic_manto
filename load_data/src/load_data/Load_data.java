@@ -398,7 +398,7 @@ public class Load_data {
                     System.out.println(jsChildObj.toString());
                     System.out.println(contador);
                     System.out.print("flg  0");
-                    statement.setString(1, (jsChildObj.get("description") != null)? jsChildObj.get("description").toString():"");
+                    statement.setString(1, (jsChildObj.get("tower") != null)? jsChildObj.get("tower").toString():"");
                     System.out.print("flg  1");
                     statement.setString(2,(jsChildObj.get("name") != null)? jsChildObj.get("name").toString():"");
                     System.out.print("flg  2");
@@ -426,6 +426,7 @@ public class Load_data {
                 }
                 catch(Exception ex ){
                     System.out.println(ex);
+                    break;
                 }
                 if(contador % size_batch == 0){
                     statement.executeBatch();

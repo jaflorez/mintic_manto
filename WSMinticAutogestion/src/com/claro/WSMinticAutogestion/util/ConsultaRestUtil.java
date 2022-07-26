@@ -1,7 +1,10 @@
 package com.claro.WSMinticAutogestion.util;
 
 import com.claro.WSMinticAutogestion.json.AccessPoint;
+import com.claro.WSMinticAutogestion.json.Coneccion_rt;
+import com.claro.WSMinticAutogestion.json.Interfaces_rt;
 import com.claro.WSMinticAutogestion.json.Radio;
+import com.claro.WSMinticAutogestion.json.Router_mk;
 import com.claro.WSMinticAutogestion.json.Switch_bts;
 
 import javax.net.ssl.HostnameVerifier;
@@ -26,6 +29,8 @@ import java.net.ProtocolException;
 import java.net.URL;
 import java.security.cert.X509Certificate;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.security.KeyManagementException;
@@ -209,6 +214,7 @@ public class ConsultaRestUtil {
             JSONArray data_js_arr =(JSONArray) json.get("data");
             JSONObject jsCld = (JSONObject) data_js_arr.get(0);
             switch_bts = new Switch_bts();
+            switch_bts.setMac(mac);
             switch_bts.setIp(jsCld.get("ip").toString());
             switch_bts.setStatus(jsCld.get("status").toString());
             switch_bts.setTower(jsCld.get("tower").toString());
@@ -241,6 +247,52 @@ public class ConsultaRestUtil {
     	
     	
     }
+    public Router_mk consultar_router() {
+    	Router_mk mk = new Router_mk();
+    	List<Interfaces_rt>  listaIR = new ArrayList<>();
+    	Interfaces_rt i_rt1 = new Interfaces_rt();
+    	i_rt1.setAddress("10.167.139.232/30");
+    	i_rt1.setInterface_("vlan-WAN");
+    	i_rt1.setNetwork_("10.167.139.232");
+    	listaIR.add(i_rt1);
+    	Interfaces_rt i_rt2 = new Interfaces_rt();
+    	i_rt2.setAddress("10.167.139.232/30");
+    	i_rt2.setInterface_("bridge_LAN");
+    	i_rt2.setNetwork_("10.167.139.232");
+    	listaIR.add(i_rt2);
+    	mk.setInterfaces(listaIR);
+    	List<Coneccion_rt>  listaCn = new ArrayList<>();
+    	Coneccion_rt cn_rt_1 = new Coneccion_rt();
+    	cn_rt_1.setFull_duplex("true");
+    	cn_rt_1.setName("ether1-WAN");
+    	cn_rt_1.setRunning("true");
+    	cn_rt_1.setRx_fcs_error("0");
+    	cn_rt_1.setSpeed("100Mbps");
+    	listaCn.add(cn_rt_1);
+    	Coneccion_rt cn_rt_2 = new Coneccion_rt();
+    	cn_rt_2.setFull_duplex("true");
+    	cn_rt_2.setName("ether1-WAN");
+    	cn_rt_2.setRunning("true");
+    	cn_rt_2.setRx_fcs_error("0");
+    	cn_rt_2.setSpeed("100Mbps");
+    	listaCn.add(cn_rt_2);
+    	Coneccion_rt cn_rt_3 = new Coneccion_rt();
+    	cn_rt_3.setFull_duplex("true");
+    	cn_rt_3.setName("ether1-WAN");
+    	cn_rt_3.setRunning("true");
+    	cn_rt_3.setRx_fcs_error("0");
+    	cn_rt_3.setSpeed("100Mbps");
+    	listaCn.add(cn_rt_3);
+    	Coneccion_rt cn_rt_4 = new Coneccion_rt();
+    	cn_rt_4.setFull_duplex("true");
+    	cn_rt_4.setName("ether1-WAN");
+    	cn_rt_4.setRunning("true");
+    	cn_rt_4.setRx_fcs_error("0");
+    	cn_rt_4.setSpeed("100Mbps");
+    	listaCn.add(cn_rt_4);
+    	mk.setConectividad(listaCn);
+    	return mk;
+    }
     public Radio consultar_rd_bts(String url_p,String mac,String token) {
     	Radio radio = null;
 		String url_api = url_p.replace("[MAC]", mac);
@@ -271,6 +323,8 @@ public class ConsultaRestUtil {
             http.setRequestProperty("Authorization", "Bearer "+token);
             http.setUseCaches(false);
             http.connect();
+            System.out.println("Ap:"+url_api);
+            System.out.println("tk:"+token);
             String readLine = null;
             StringBuffer jsonResponseData = new StringBuffer();
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(http.getInputStream()));
@@ -285,6 +339,8 @@ public class ConsultaRestUtil {
             JSONObject jsCld = (JSONObject) data_js_arr.get(0);
             radio = new Radio();
             radio.setMac(mac);
+            radio.setName(jsCld.get("name").toString());
+            radio.setTower(jsCld.get("tower").toString());
             radio.setStatus(jsCld.get("status").toString());
             radio.setLan_mode_status(jsCld.get("lan_mode_status").toString());            
             radio.setLan_speed_status(jsCld.get("lan_speed_status").toString());

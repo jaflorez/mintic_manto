@@ -115,6 +115,8 @@ public class Controller {
     	switch_bts.setStatus("online");
     	switch_bts.setTower("ANT.El Totumo");
     	centroDigital.setSwitch_bts(switch_bts);
+    	
+    	
     	Router_mk mk = new Router_mk();
     	List<Interfaces_rt>  listaIR = new ArrayList<>();
     	Interfaces_rt i_rt1 = new Interfaces_rt();
@@ -186,7 +188,6 @@ public class Controller {
     	centroDigital.setDepartamento(centroDigitalVO.getDepartamento());
     	
     	centroDigital.setResponsables(centroDigitalVO.getResponsables());
-    	System.out.println("CD 01 Clt DAO 02");
     	
     	List<AccessPoint>  listaAP = new ArrayList<>();
     	ConsultaRestUtil consultaRestUtil = new ConsultaRestUtil();
@@ -212,6 +213,9 @@ public class Controller {
     	centroDigital.setAps(listaAP);
     	centroDigital.setRadio_cd(rd_cd);
     	System.out.println("CD 01 Clt RESPONSABLES");
+    	Router_mk router_mk = new Router_mk();
+    	router_mk = consultaRestUtil.consultar_router();
+    	centroDigital.setRouter_mk(router_mk);
     	centroDigital.setResponsables(centroDigital.getResponsables());
     	if(rd_cd != null) {
     		if(rd_cd.getAp_mac() != null ) {

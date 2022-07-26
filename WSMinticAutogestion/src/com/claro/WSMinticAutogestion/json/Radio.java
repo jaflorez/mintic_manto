@@ -9,6 +9,7 @@ public class Radio {
     private String mac;
     private String ap_mac;
     private String tower;
+    private String name;
 	public String getStatus() {
 		return status;
 	}
@@ -56,6 +57,12 @@ public class Radio {
 	}
 	public void setTower(String tower) {
 		this.tower = tower;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
 	}
 
     

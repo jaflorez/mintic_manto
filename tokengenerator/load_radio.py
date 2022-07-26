@@ -124,9 +124,9 @@ def main():
 
 
 
-        print("RADIO BTS")
+        print("RADIO BTS new")
         api_call_headers = {'Authorization': 'Bearer ' + data[ID_SW_RD]}
-        api_call_response = requests.get('https://prycnmrs1.claro.net.co/api/v2/devices/00:04:56:46:A4:00/statistics?fields=distance,lan_mode_status,lan_speed_status,mac,status', headers=api_call_headers, verify=False)        
+        api_call_response = requests.get('https://prycnmrs1.claro.net.co/api/v2/devices/00:04:56:46:A4:00/statistics?fields=distance,lan_mode_status,lan_speed_status,name,mac,status,tower', headers=api_call_headers, verify=False)        
         print(api_call_response.text)
         print("--"*20)
         
