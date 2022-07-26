@@ -14,20 +14,21 @@ public class MinticDAO {
 	 * Metodo de trae la conexion a Base de datos, segun datos de conexion
 	 * @return
 	 */
-	public static Connection getConnection(String jdbcURL,String username,String password) {
+	public  Connection getConnection(String jdbcURL,String username,String password) {
 		try {
 			Connection connection;
-			System.out.println("jk:"+jdbcURL);
-			System.out.println("usr:"+username);
-			System.out.println("pwd:"+password);
 			Class.forName("com.mysql.jdbc.Driver");
 	        connection = DriverManager.getConnection(jdbcURL, username, password);
 	        return connection;
 		} 
 		catch (SQLException sqle) {
+			System.out.println("MinticDAO MinticDAO SQLException ");
+			System.out.println(sqle.toString());
 			sqle.printStackTrace();
+			
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
+			System.out.println("MinticDAO ClassNotFoundException");
+			System.out.println(e.toString());
 			e.printStackTrace();
 		} 
 		return null;

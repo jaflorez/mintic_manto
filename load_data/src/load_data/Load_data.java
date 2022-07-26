@@ -79,17 +79,17 @@ public class Load_data {
             ruta_carga = prop.getProperty("PATH_FILES");
             Load_data load_data = new Load_data();
             Connection con = Utilidades.getConection(prop.getProperty("DB_STR_CONNECTION"), prop.getProperty("DB_USER"), prop.getProperty("DB_PWD"));
-            load_data.load_generador_scripts(ruta_carga+"//Generador de Script Mintic.xlsm",con);
-            load_data.load_consolidado(ruta_carga+"//CONSOLIDADO.xlsx",con);
+//            load_data.load_generador_scripts(ruta_carga+"//Generador de Script Mintic.xlsm",con);
+//            load_data.load_consolidado(ruta_carga+"//CONSOLIDADO.xlsx",con);
             String[] tokens  =  load_data.generar_tokens(prop.getProperty("PATH_TOKENS"),prop.getProperty("SCRIPT_TOKENS"));           
-            load_data.actualizar_ap(tokens[1],prop.getProperty("URL_AP1_LST"),1,con);
-            load_data.actualizar_ap(tokens[2],prop.getProperty("URL_AP2_LST"),2,con);
-            load_data.actualizar_aps(con);
+//            load_data.actualizar_ap(tokens[1],prop.getProperty("URL_AP1_LST"),1,con);
+//            load_data.actualizar_ap(tokens[2],prop.getProperty("URL_AP2_LST"),2,con);
+//            load_data.actualizar_aps(con);
             load_data.actualizar_rs(tokens[0],prop.getProperty("URL_RD_LST"),con);
             load_data.actualizar_rss(con);
-            Connection con_resp = Utilidades.getConection(prop.getProperty("DB_RESP_STR_CONNECTION"), prop.getProperty("DB_RESP_USER"), prop.getProperty("DB_RESP_PWD"));
-            load_data.actualizar_responsables(con_resp, con);
-            con_resp.close();
+//            Connection con_resp = Utilidades.getConection(prop.getProperty("DB_RESP_STR_CONNECTION"), prop.getProperty("DB_RESP_USER"), prop.getProperty("DB_RESP_PWD"));
+//            load_data.actualizar_responsables(con_resp, con);
+//            con_resp.close();
             con.close();
             System.out.println("---- Fin --- ");
         }
@@ -376,7 +376,7 @@ public class Load_data {
             StringBuilder jsonResponseData = new StringBuilder();
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(http.getInputStream()));
             while ((readLine = bufferedReader.readLine()) != null) {
-                    jsonResponseData.append(readLine + "\n");
+                jsonResponseData.append(readLine).append("\n");
             }
             bufferedReader.close();
             JSONParser parser = new JSONParser();  
@@ -394,19 +394,35 @@ public class Load_data {
             while (iterator.hasNext()) {
                 try{
                     JSONObject jsChildObj = iterator.next();
+                    System.out.println(jsChildObj.toJSONString());
+                    System.out.println(jsChildObj.toString());
+                    System.out.println(contador);
+                    System.out.print("flg  0");
                     statement.setString(1, (jsChildObj.get("description") != null)? jsChildObj.get("description").toString():"");
+                    System.out.print("flg  1");
                     statement.setString(2,(jsChildObj.get("name") != null)? jsChildObj.get("name").toString():"");
+                    System.out.print("flg  2");
                     statement.setString(3, (jsChildObj.get("ip") != null)? jsChildObj.get("ip").toString():"");
+                    System.out.print("flg  3");
                     statement.setString(4, (jsChildObj.get("network") != null)? jsChildObj.get("network").toString():"");
+                    System.out.print("flg  4");
                     statement.setString(5, (jsChildObj.get("product") != null)? jsChildObj.get("product").toString():"");
-                    statement.setString(6, (jsChildObj.get("type") != null)? jsChildObj.get("product").toString():"");
+                    System.out.print("flg  5");
+                    statement.setString(6, (jsChildObj.get("type") != null)? jsChildObj.get("type").toString():"");
+                    System.out.print("flg  6");
                     statement.setString(7, (jsChildObj.get("site") != null)? jsChildObj.get("site").toString():"");
+                    System.out.print("flg  7");
                     statement.setString(8, (jsChildObj.get("mac") != null)? jsChildObj.get("mac").toString():"");
+                    System.out.print("flg  8");
                     statement.setString(9, (jsChildObj.get("mode") != null)? jsChildObj.get("msn").toString():"");
+                    System.out.print("flg  9");
                     statement.setString(10, (jsChildObj.get("parent_mac") != null)? jsChildObj.get("parent_mac").toString():"");
+                    System.out.print("flg  10");
                     statement.setString(11, (jsChildObj.get("status") != null)? jsChildObj.get("status").toString():"");
+                    System.out.print("flg  11");
                     statement.addBatch();
                     contador++;
+                    System.out.println(contador);
                 }
                 catch(Exception ex ){
                     System.out.println(ex);

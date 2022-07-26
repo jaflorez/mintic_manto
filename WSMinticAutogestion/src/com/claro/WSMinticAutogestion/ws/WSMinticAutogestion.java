@@ -44,32 +44,36 @@ public class WSMinticAutogestion {
 	  CentroDigital objCentro = new CentroDigital();
 	  BufferedReader rd = new BufferedReader(new InputStreamReader(idConsulta));
 	  JSONParser jp = new JSONParser();
-	  
-	  
 	  String line = "";
 	  String jsonRequest = "";
+	  System.out.println("Flag 01");
 	  try {
 		  while((line = rd.readLine()) != null){
 			  jsonRequest = jsonRequest+line.trim();
 		  }
+		  System.out.println("Flag 02");
 		  System.out.println("Valor JSON Enviado: "+jsonRequest);
 		  JSONObject jso = (JSONObject)jp.parse(jsonRequest);
 		  String id = jso.get("id").toString();
-		  
-		  
 		  controller = new Controller();
+		  System.out.println("Flag 03 :" + id);
 		  try {
 			  objCentro = controller.consultarCentroDigital(id);
-			  
+			  System.out.println("Flag 03++ :" + objCentro.getNombre_ct_pob());
 		  } catch (Exception e) {
+			  System.out.println("Flag 04 :" + e.toString());
 			  e.printStackTrace();
 		  }
+		  System.out.println("Flag 04");
 	  }
 	  catch (Exception e) {
+		  System.out.println("Exception: "+e.toString());
 		  e.printStackTrace();
 	  }
+	  System.out.println("Flag 05");
 	  Gson gson = new Gson();
 	  json = gson.toJson(objCentro);
+	  System.out.println("Flag 06");
 	  return Response.status(201).entity(json).build();
 	}
 

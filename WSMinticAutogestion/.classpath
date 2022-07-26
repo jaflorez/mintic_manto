@@ -28,6 +28,5 @@
 			<attribute name="owner.project.facets" value="jst.web"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="D:/CLARO/DEV_ECLIPSE/library/mysql-connector-java-8.0.11.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

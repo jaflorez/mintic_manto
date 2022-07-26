@@ -322,6 +322,8 @@ public class ConsultaRestUtil {
 		
 		AccessPoint accessPoint = null;
 		String url_api = url_p.replace("[MAC]", mac);
+		System.out.println("url:"+url_api);
+		System.out.println("tk:"+token);
     	URL url;
         try {
             TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager(){
