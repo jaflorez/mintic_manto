@@ -219,6 +219,8 @@ public class ConsultaRestUtil {
             switch_bts.setStatus(jsCld.get("status").toString());
             switch_bts.setTower(jsCld.get("tower").toString());
             switch_bts.setName_sw(jsCld.get("name").toString());
+            switch_bts.setLan_speed_status(jsCld.get("lan_speed_status").toString());
+            switch_bts.setLan_mode_status(jsCld.get("lan_mode_status").toString());
             http.disconnect();			
             
         } catch (NoSuchAlgorithmException e) {

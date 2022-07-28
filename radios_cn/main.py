@@ -30,7 +30,10 @@ device_data_rs1 = requests.get("https://prycnmrs1.claro.net.co/api/v2/devices/",
 
 # Carga la información obtenida a un JSON
 csvhead = """"Description","Device Type","Device_Name","IP Address","IPv6 Address","MAC","Network","Onboard Date","Serial_Number","Site","Software Version","Status","Status_Time","Status_Time_Seconds","Model","Managed_Account","Site_Address","Duration"\n"""
+
 data = device_data_rs1.json()
+print(data.keys())
+
 for device in data['data']:
     try:
         desc = device['description']
@@ -62,6 +65,6 @@ for device in data['data']:
                 status=device['status'], tiempo_stat=tiempo_stat, seg=device['status_time'], typ=device['type'],
                 managed_account=managed_account)
 
-with open('CN_RADIOS.csv', 'w', encoding='utf-8') as f:
+with open('CN_RADIOS_01.csv', 'w', encoding='utf-8') as f:
     f.write(csvhead)
 print("Done!")

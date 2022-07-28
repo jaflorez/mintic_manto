@@ -105,9 +105,9 @@ def main():
         
         
         
-        print("switches 00:04:56:46:A4:00" )
+        print("switches speed" )
         api_call_headers = {'Authorization': 'Bearer ' + data[ID_SW_RD]}
-        api_call_response = requests.get('https://prycnmrs1.claro.net.co/api/v2/devices/00:04:56:46:A4:00/statistics?fields=name,status,tower,ip', headers=api_call_headers, verify=False)        
+        api_call_response = requests.get('https://prycnmrs1.claro.net.co/api/v2/devices/00:04:56:46:A4:00/statistics?fields=name,status,tower,ip,lan_speed_status,lan_mode_status,error', headers=api_call_headers, verify=False)        
                                          
         print(api_call_response.text)
         print("--"*20)

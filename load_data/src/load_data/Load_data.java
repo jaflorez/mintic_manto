@@ -21,9 +21,6 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.json.simple.parser.ParseException;
-
-
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -68,9 +65,10 @@ public class Load_data {
         String ruta_carga = ""; 
         Properties prop=null;
         try {
-            prop = Utilidades.readPropertiesFile("D:\\CLARO\\mintic\\MinticAutogestion.properties");
+            prop = Utilidades.readPropertiesFile("resources/MinticAutogestion.properties");
             System.out.println("Prop: "+ prop.getProperty("PATH_FILES"));
         } catch (IOException ex) {
+            System.out.println("No cargo");
             Logger.getLogger(Load_data.class.getName()).log(Level.SEVERE, null, ex);
             System.exit(0);
         }
@@ -79,21 +77,20 @@ public class Load_data {
             ruta_carga = prop.getProperty("PATH_FILES");
             Load_data load_data = new Load_data();
             Connection con = Utilidades.getConection(prop.getProperty("DB_STR_CONNECTION"), prop.getProperty("DB_USER"), prop.getProperty("DB_PWD"));
-//            load_data.load_generador_scripts(ruta_carga+"//Generador de Script Mintic.xlsm",con);
-//            load_data.load_consolidado(ruta_carga+"//CONSOLIDADO.xlsx",con);
+            load_data.load_generador_scripts(ruta_carga+"//Generador de Script Mintic.xlsm",con);
+            load_data.load_consolidado(ruta_carga+"//CONSOLIDADO.xlsx",con);
             String[] tokens  =  load_data.generar_tokens(prop.getProperty("PATH_TOKENS"),prop.getProperty("SCRIPT_TOKENS"));           
-//            load_data.actualizar_ap(tokens[1],prop.getProperty("URL_AP1_LST"),1,con);
-//            load_data.actualizar_ap(tokens[2],prop.getProperty("URL_AP2_LST"),2,con);
-//            load_data.actualizar_aps(con);
-            load_data.actualizar_rs(tokens[0],prop.getProperty("URL_RD_LST"),con);
-            load_data.actualizar_rss(con);
-//            Connection con_resp = Utilidades.getConection(prop.getProperty("DB_RESP_STR_CONNECTION"), prop.getProperty("DB_RESP_USER"), prop.getProperty("DB_RESP_PWD"));
-//            load_data.actualizar_responsables(con_resp, con);
-//            con_resp.close();
+            load_data.actualizar_ap(tokens[1],prop.getProperty("URL_AP1_LST"),1,con);
+            load_data.actualizar_ap(tokens[2],prop.getProperty("URL_AP2_LST"),2,con);
+            load_data.actualizar_aps(con);
+            load_data.actualizar_rs_file(prop.getProperty("PATH_FILES")+"//cnMaestro-device.xlsx" ,con);
+            Connection con_resp = Utilidades.getConection(prop.getProperty("DB_RESP_STR_CONNECTION"), prop.getProperty("DB_RESP_USER"), prop.getProperty("DB_RESP_PWD"));
+            load_data.actualizar_responsables(con_resp, con);
+            con_resp.close();
             con.close();
             System.out.println("---- Fin --- ");
         }
-        catch(Exception ex)
+        catch(SQLException ex)
         {
             Logger.getLogger(Load_data.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -320,7 +317,8 @@ public class Load_data {
     
     /**
      * Funcion para actualizar los Tokens
-     * @param tokes 
+     * @param connection_resp
+     * @param connection 
      */
     public void actualizar_responsables(Connection connection_resp,Connection connection)
     {
@@ -340,6 +338,70 @@ public class Load_data {
             }            
         } catch (SQLException ex) {
             Logger.getLogger(Load_data.class.getName()).log(Level.SEVERE, null, ex);            
+        }
+    }
+    public void actualizar_rs_file(String rutaFile,Connection connection){
+        System.out.println("Procesando:"+rutaFile);
+        try {
+            
+            File myFile = new File(rutaFile);
+            if(myFile.exists()){
+                FileInputStream fis = new FileInputStream(myFile);
+                XSSFWorkbook myWorkBook = new XSSFWorkbook (fis);
+                XSSFSheet mySheet = myWorkBook.getSheetAt(0);
+                Iterator<Row> rowIterator = mySheet.iterator();                
+                String sql ="DELETE FROM tmp_rd_sw";
+                PreparedStatement statement = connection.prepareStatement(sql); 
+                statement.execute();
+                sql = "INSERT INTO mintic.tmp_rd_sw(managed_account,mac,device_name,ip_address,ipv6_address,device_type,serial_number,description,active_sw_version,duration,status,status_time,status_time_seconds,height)VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
+                rowIterator.next();
+                while (rowIterator.hasNext()) {
+                    Row row = rowIterator.next();
+                    statement = connection.prepareStatement(sql); 
+                    for(int contador_fld=0;contador_fld<=13;contador_fld++){
+                        if(row.getCell(contador_fld) != null ){
+                            switch (row.getCell(contador_fld).getCellTypeEnum()){
+                                case BLANK:
+                                    statement.setNull(contador_fld+1, java.sql.Types.NULL);
+                                    break;
+                                case STRING:
+                                    statement.setString(contador_fld+1, row.getCell(contador_fld).getStringCellValue());
+                                    break;
+                                case NUMERIC:
+                                    NumberFormat nf = NumberFormat.getNumberInstance();
+                                    nf.setMaximumFractionDigits(0);
+                                    String rounded = nf.format(row.getCell(contador_fld).getNumericCellValue());
+                                    rounded = rounded.replace(".", "");
+                                    statement.setString(contador_fld+1,rounded);
+                                    break;                                    
+                                case BOOLEAN:
+                                    statement.setString(contador_fld+1, "");
+                                    break;
+                                default:
+                                    statement.setString(contador_fld+1, "");
+                                    break;
+                           }
+                        }
+                        else{
+                            statement.setString(contador_fld+1, "");
+                        }
+                    }
+                    statement.execute();
+                }
+                myWorkBook.close();
+                fis.close();
+                myFile.delete();          
+                sql = "CALL sp_update_sw_rs();";
+                statement = connection.prepareStatement(sql); 
+                statement.execute();
+            }
+            else{
+                System.out.println("No exite el archivo"+ rutaFile);
+            }
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Load_data.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException | SQLException ex) {
+            Logger.getLogger(Load_data.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     public void actualizar_rs(String token,String url_api,Connection connection){
@@ -387,52 +449,36 @@ public class Load_data {
             String sql = "DELETE FROM tmp_rs;";
             PreparedStatement statement = connection.prepareStatement(sql); 
             statement.execute();
-            sql = "INSERT INTO tmp_rs(description,name_rs,ip,network,product,type,site,mac,mode,parent_mac,status) VALUES(?,?,?,?,?,?,?,?,?,?,?);";
+            sql = "INSERT INTO mintic.tmp_rs(name_rs,ip,network,product,type,mac,mode,tower,status) VALUES(?,?,?,?,?,?,?,?,?);";
             statement = connection.prepareStatement(sql); 
-            int size_batch = 20;
             int contador = 0;
             while (iterator.hasNext()) {
                 try{
+                    sql = "INSERT INTO mintic.tmp_rs(name_rs,ip,network,product,type,mac,mode,tower,status,description) VALUES(?,?,?,?,?,?,?,?,?,?);";
+                    statement = connection.prepareStatement(sql); 
                     JSONObject jsChildObj = iterator.next();
-                    System.out.println(jsChildObj.toJSONString());
-                    System.out.println(jsChildObj.toString());
-                    System.out.println(contador);
-                    System.out.print("flg  0");
-                    statement.setString(1, (jsChildObj.get("tower") != null)? jsChildObj.get("tower").toString():"");
-                    System.out.print("flg  1");
-                    statement.setString(2,(jsChildObj.get("name") != null)? jsChildObj.get("name").toString():"");
-                    System.out.print("flg  2");
-                    statement.setString(3, (jsChildObj.get("ip") != null)? jsChildObj.get("ip").toString():"");
-                    System.out.print("flg  3");
-                    statement.setString(4, (jsChildObj.get("network") != null)? jsChildObj.get("network").toString():"");
-                    System.out.print("flg  4");
-                    statement.setString(5, (jsChildObj.get("product") != null)? jsChildObj.get("product").toString():"");
-                    System.out.print("flg  5");
-                    statement.setString(6, (jsChildObj.get("type") != null)? jsChildObj.get("type").toString():"");
-                    System.out.print("flg  6");
-                    statement.setString(7, (jsChildObj.get("site") != null)? jsChildObj.get("site").toString():"");
-                    System.out.print("flg  7");
-                    statement.setString(8, (jsChildObj.get("mac") != null)? jsChildObj.get("mac").toString():"");
-                    System.out.print("flg  8");
-                    statement.setString(9, (jsChildObj.get("mode") != null)? jsChildObj.get("msn").toString():"");
-                    System.out.print("flg  9");
-                    statement.setString(10, (jsChildObj.get("parent_mac") != null)? jsChildObj.get("parent_mac").toString():"");
-                    System.out.print("flg  10");
-                    statement.setString(11, (jsChildObj.get("status") != null)? jsChildObj.get("status").toString():"");
-                    System.out.print("flg  11");
-                    statement.addBatch();
+                    statement.setString(1, (jsChildObj.get("name") != null)? jsChildObj.get("name").toString():"");
+                    statement.setString(2, (jsChildObj.get("ip") != null)? jsChildObj.get("ip").toString():"");
+                    statement.setString(3, (jsChildObj.get("network") != null)? jsChildObj.get("network").toString():"");
+                    statement.setString(4, (jsChildObj.get("product") != null)? jsChildObj.get("product").toString():"");
+                    statement.setString(5, (jsChildObj.get("type") != null)? jsChildObj.get("type").toString():"");
+                    statement.setString(6, (jsChildObj.get("mac") != null)? jsChildObj.get("mac").toString():"");
+                    statement.setString(7, (jsChildObj.get("mode") != null)? jsChildObj.get("mode").toString():"");
+                    statement.setString(8, (jsChildObj.get("tower") != null)? jsChildObj.get("tower").toString():"");
+                    statement.setString(9, (jsChildObj.get("status") != null)? jsChildObj.get("status").toString():"");
+                    statement.setString(10, (jsChildObj.get("description") != null)? jsChildObj.get("description").toString():"");
+                    statement.execute();
+                    System.out.print( contador+"Desc[");
+                    System.out.print((jsChildObj.get("description") != null)? jsChildObj.get("description").toString():"?");
+                    System.out.print( contador+"]:");
+                    System.out.println( jsChildObj.get("name"));
                     contador++;
-                    System.out.println(contador);
                 }
                 catch(Exception ex ){
                     System.out.println(ex);
                     break;
                 }
-                if(contador % size_batch == 0){
-                    statement.executeBatch();
-                }
             }            
-            statement.executeBatch();            
             http.disconnect();			
         } catch (MalformedURLException | ProtocolException ex) {
             Logger.getLogger(Load_data.class.getName()).log(Level.SEVERE, null, ex);
