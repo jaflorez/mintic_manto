@@ -83,6 +83,7 @@ public class Load_data {
             load_data.actualizar_ap(tokens[1],prop.getProperty("URL_AP1_LST"),1,con);
             load_data.actualizar_ap(tokens[2],prop.getProperty("URL_AP2_LST"),2,con);
             load_data.actualizar_aps(con);
+            /*Se ajusta temporalmente mientra se resuelve la conexion al servidor*/
             load_data.actualizar_rs_file(prop.getProperty("PATH_FILES")+"//cnMaestro-device.xlsx" ,con);
             Connection con_resp = Utilidades.getConection(prop.getProperty("DB_RESP_STR_CONNECTION"), prop.getProperty("DB_RESP_USER"), prop.getProperty("DB_RESP_PWD"));
             load_data.actualizar_responsables(con_resp, con);
