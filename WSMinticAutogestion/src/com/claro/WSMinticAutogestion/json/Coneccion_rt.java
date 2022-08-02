@@ -6,6 +6,17 @@ public class Coneccion_rt {
 	private String running;
 	private String rx_fcs_error;
 	private String speed;
+	public Coneccion_rt() {
+		
+	}
+	public Coneccion_rt(String full_duplex, String name, String running, String rx_fcs_error, String speed) {
+		super();
+		this.full_duplex = full_duplex;
+		this.name = name;
+		this.running = running;
+		this.rx_fcs_error = rx_fcs_error;
+		this.speed = speed;
+	}
 	public String getFull_duplex() {
 		return full_duplex;
 	}

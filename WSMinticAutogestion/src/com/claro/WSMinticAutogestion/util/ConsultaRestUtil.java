@@ -14,6 +14,7 @@ import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -24,18 +25,22 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.security.cert.X509Certificate;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+
 
 
 public class ConsultaRestUtil {
@@ -249,7 +254,153 @@ public class ConsultaRestUtil {
     	
     	
     }
-    public Router_mk consultar_router() {
+    public List<Coneccion_rt> consultar_router_conecciones(String urlApi,String ip,String usr,String psw) {
+        String usernameColonPassword = usr+ ":" + psw;
+        String urlApiIPN = urlApi.replace("[IP]", ip);
+        BufferedReader httpResponseReader = null;
+        List<Coneccion_rt>  listaCR = new ArrayList<>();        
+        try {
+        	String basicAuthPayload = "Basic " + Base64.getEncoder().encodeToString(usernameColonPassword.getBytes());
+            TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager(){
+                public X509Certificate[] getAcceptedIssuers(){return null;}
+                public void checkClientTrusted(X509Certificate[] certs, String authType){}
+                public void checkServerTrusted(X509Certificate[] certs, String authType){}
+            }};
+            SSLContext sc = SSLContext.getInstance("SSL");
+            sc.init(null, trustAllCerts, new SecureRandom());
+            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+            HostnameVerifier hv = new HostnameVerifier() {
+                public boolean verify(String urlHostName, SSLSession session) {
+                    if (!urlHostName.equalsIgnoreCase(session.getPeerHost())) {
+                        System.out.println("Warning: URL host '" + urlHostName + "' is different to SSLSession host '" + session.getPeerHost() + "'.");
+                    }
+                    return true;
+                }
+            };
+            HttpsURLConnection.setDefaultHostnameVerifier(hv);
+            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+            URL serverUrl = new URL(urlApiIPN);
+            HttpURLConnection urlConnection = (HttpURLConnection) serverUrl.openConnection();
+            urlConnection.setRequestMethod("GET");
+            urlConnection.addRequestProperty("Authorization", basicAuthPayload);
+            httpResponseReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+            String readLine;
+            StringBuffer jsonResponseData = new StringBuffer();
+            while((readLine = httpResponseReader.readLine()) != null) {
+            	jsonResponseData.append(readLine + "\n");
+            }
+            httpResponseReader.close();
+            String data = jsonResponseData.toString();
+            JSONParser parser=new JSONParser();
+            Object obj = parser.parse(data);
+            JSONArray jsonArr = (JSONArray)obj;
+            Coneccion_rt coneccion_rt;
+            
+            for (int i = 0; i < jsonArr.size(); i++) {
+                JSONObject jsonObj = (JSONObject) jsonArr.get(i);
+                try {
+                    coneccion_rt = new Coneccion_rt();
+                    coneccion_rt.setFull_duplex(jsonObj.get("full-duplex").toString());
+                    coneccion_rt.setName(jsonObj.get("name").toString());
+                    coneccion_rt.setRunning(jsonObj.get("running").toString());
+                    coneccion_rt.setRx_fcs_error(jsonObj.get("rx-fcs-error").toString());
+                    coneccion_rt.setSpeed(jsonObj.get("speed").toString());
+                    listaCR.add(coneccion_rt);
+				} catch (Exception e) {
+					System.out.println(e);
+		            Logger.getLogger(ConsultaRestUtil.class.getName()).log(Level.SEVERE, null, e);
+				}
+                
+            }
+            return listaCR;
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        } catch (NoSuchAlgorithmException ex) {
+            Logger.getLogger(ConsultaRestUtil.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (KeyManagementException ex) {
+            Logger.getLogger(ConsultaRestUtil.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+            if (httpResponseReader != null) {
+                try {
+                    httpResponseReader.close();
+                } catch (IOException ioe) {
+                }
+            }
+        }
+    	
+    	return listaCR;
+    }
+    public List<Interfaces_rt> consultar_router_interfaces(String urlApi,String ip,String usr,String psw) {
+        String usernameColonPassword = usr+ ":" + psw;
+        String urlApiIPN = urlApi.replace("[IP]", ip);
+        BufferedReader httpResponseReader = null;
+        List<Interfaces_rt>  listaIR = new ArrayList<>();        
+        try {
+        	String basicAuthPayload = "Basic " + Base64.getEncoder().encodeToString(usernameColonPassword.getBytes());
+            TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager(){
+                public X509Certificate[] getAcceptedIssuers(){return null;}
+                public void checkClientTrusted(X509Certificate[] certs, String authType){}
+                public void checkServerTrusted(X509Certificate[] certs, String authType){}
+            }};
+            SSLContext sc = SSLContext.getInstance("SSL");
+            sc.init(null, trustAllCerts, new SecureRandom());
+            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+            HostnameVerifier hv = new HostnameVerifier() {
+                public boolean verify(String urlHostName, SSLSession session) {
+                    if (!urlHostName.equalsIgnoreCase(session.getPeerHost())) {
+                        System.out.println("Warning: URL host '" + urlHostName + "' is different to SSLSession host '" + session.getPeerHost() + "'.");
+                    }
+                    return true;
+                }
+            };
+            HttpsURLConnection.setDefaultHostnameVerifier(hv);
+            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+            URL serverUrl = new URL(urlApiIPN);
+            HttpURLConnection urlConnection = (HttpURLConnection) serverUrl.openConnection();
+            urlConnection.setRequestMethod("GET");
+            urlConnection.addRequestProperty("Authorization", basicAuthPayload);
+            httpResponseReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+            String readLine;
+            StringBuffer jsonResponseData = new StringBuffer();
+            while((readLine = httpResponseReader.readLine()) != null) {
+            	jsonResponseData.append(readLine + "\n");
+            }
+            httpResponseReader.close();
+            String data = jsonResponseData.toString();
+            JSONParser parser=new JSONParser();
+            Object obj = parser.parse(data);
+            JSONArray jsonArr = (JSONArray)obj;
+            Interfaces_rt interfaces_rt;
+            for (int i = 0; i < jsonArr.size(); i++) {
+                JSONObject jsonObj = (JSONObject) jsonArr.get(i);
+                interfaces_rt = new Interfaces_rt(jsonObj.get("address").toString(), jsonObj.get("interface").toString(), jsonObj.get("network").toString());
+                listaIR.add(interfaces_rt);
+            }
+            return listaIR;
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        } catch (NoSuchAlgorithmException ex) {
+            Logger.getLogger(ConsultaRestUtil.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (KeyManagementException ex) {
+            Logger.getLogger(ConsultaRestUtil.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+            if (httpResponseReader != null) {
+                try {
+                    httpResponseReader.close();
+                } catch (IOException ioe) {
+                }
+            }
+        }
+    	
+    	return listaIR;
+    }
+    public Router_mk consultar_router_data() {
     	Router_mk mk = new Router_mk();
     	List<Interfaces_rt>  listaIR = new ArrayList<>();
     	Interfaces_rt i_rt1 = new Interfaces_rt();
@@ -325,8 +476,6 @@ public class ConsultaRestUtil {
             http.setRequestProperty("Authorization", "Bearer "+token);
             http.setUseCaches(false);
             http.connect();
-            System.out.println("Ap:"+url_api);
-            System.out.println("tk:"+token);
             String readLine = null;
             StringBuffer jsonResponseData = new StringBuffer();
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(http.getInputStream()));
@@ -380,8 +529,6 @@ public class ConsultaRestUtil {
 		
 		AccessPoint accessPoint = null;
 		String url_api = url_p.replace("[MAC]", mac);
-		System.out.println("url:"+url_api);
-		System.out.println("tk:"+token);
     	URL url;
         try {
             TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager(){
