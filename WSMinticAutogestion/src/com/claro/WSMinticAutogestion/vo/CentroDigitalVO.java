@@ -28,7 +28,6 @@ public class CentroDigitalVO {
 		this.ip_router=ip_router;
 		this.server_data=server_data;
 	}
-	
 	public String getId_beneficiario() {
 		return id_beneficiario;
 	}

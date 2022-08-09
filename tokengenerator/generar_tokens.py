@@ -3,10 +3,12 @@ from requests_oauthlib import OAuth2Session
 import json
 import ssl
 import datetime 
+import sys
+import os
 def read_properties(file_path):
     separator = "="
     keys = {}
-    with open(file_path) as f:
+    with open(os.path.join(sys.path[0], file_path), "r") as f:
         for line in f:
             if separator in line:
                 name, value = line.split(separator, 1)
@@ -17,14 +19,10 @@ def main(properties):
     json_1 = open(properties["PATH_CRD_RS"])
     token_json = json.load(json_1)
     access_token_url =  properties["URL_TK_RS"]
-    print("Acce:",access_token_url)
     client = BackendApplicationClient(client_id=token_json['client_id'])
     oauth = OAuth2Session(client=client)
     token = oauth.fetch_token(token_url=access_token_url, client_id=token_json['client_id'], client_secret=token_json['client_secret'], verify=ssl.CERT_NONE)
     access_tokenrs = token['access_token']
-    
-    #servidor access point 1
-    print("AP",properties["PATH_CRD_AP1"])
     json_1 = open(properties["PATH_CRD_AP1"])
     token_json = json.load(json_1)
     access_token_url =  properties["URL_TK_AP1"]
@@ -45,5 +43,5 @@ def main(properties):
     f.write("{},{},{},{}".format(access_tokenrs,access_token1,access_token2,dt_tk))
     f.close()
 if __name__ == '__main__':                               
-    properties=read_properties("D://CLARO//MINTIC//MinticAutogestion.properties")
+    properties=read_properties("MinticAutoatencion.properties")
     main(properties)

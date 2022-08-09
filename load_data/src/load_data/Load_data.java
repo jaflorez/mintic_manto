@@ -65,7 +65,7 @@ public class Load_data {
         String ruta_carga = ""; 
         Properties prop=null;
         try {
-            prop = Utilidades.readPropertiesFile("resources/MinticAutogestion.properties");
+            prop = Utilidades.readPropertiesFile("resources/MinticAutoatencion.properties");
             System.out.println("Prop: "+ prop.getProperty("PATH_FILES"));
         } catch (IOException ex) {
             System.out.println("No cargo");
@@ -96,7 +96,11 @@ public class Load_data {
             Logger.getLogger(Load_data.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+    /**
+     * Funcion para cargar el archivo generador_scripts 
+     * @param ruta Ruta en donde se encuentra el archivo GeneradorScripts.xlsx
+     * @param connection  Coneccion a la base de datos para la carga de datos
+     */
     public void load_generador_scripts(String ruta,Connection connection){
         FileInputStream fis = null;
         System.out.println("Cargando archivo generador de Script "+ ruta);
@@ -176,6 +180,11 @@ public class Load_data {
             System.out.println(ex);
         }
     }
+    /**
+     * Cargar el archivo de excel conssolidado.xlsx
+     * @param ruta Ruta en donde se encuentra el archivo
+     * @param connection  Coneccion a la base de datos.
+     */
     public void load_consolidado(String ruta,Connection connection){
         FileInputStream fis = null;
         System.out.println("Cargando Consolidado: " + ruta);
@@ -260,7 +269,7 @@ public class Load_data {
         BufferedReader br = null;
         boolean no_es_vigente = false;
         try {
-            String[] tokens;
+            String[] tokens = null;
             while(true){
                 tokens = read_tokens_file(ruta);
                 String[] fech = tokens[3].split("T");
@@ -273,7 +282,8 @@ public class Load_data {
                 if(minutes > 50){
                     System.out.println("Recargo:"+callPy);
                     Process p = Runtime.getRuntime().exec(callPy);
-                    System.out.println("Llama");
+                    p.waitFor();
+                    Thread.sleep(1000);
                 }
                 else{
                     System.out.println("Fin Break");
@@ -285,15 +295,22 @@ public class Load_data {
             
         } catch (IOException ex) {
             Logger.getLogger(Load_data.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Load_data.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
         
     }
+    /**
+     * Cargar el archivo de tokens
+     * @param ruta
+     * @return 
+     */
     public String[]  read_tokens_file(String ruta){
         BufferedReader br = null;
         String[] tokens = null;
+        System.out.println("Rta"+ruta);
         try {
-            
             String file_token = ruta;
             br = new BufferedReader(new FileReader(file_token));
             String st;
@@ -302,8 +319,10 @@ public class Load_data {
             }
             return tokens;
         } catch (FileNotFoundException ex) {
+            System.out.println(ex);
             Logger.getLogger(Load_data.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
+            System.out.println(ex);
             Logger.getLogger(Load_data.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             try {
@@ -317,7 +336,7 @@ public class Load_data {
     }
     
     /**
-     * Funcion para actualizar los Tokens
+     * Funcion para actualizar los responsables
      * @param connection_resp
      * @param connection 
      */
@@ -341,6 +360,11 @@ public class Load_data {
             Logger.getLogger(Load_data.class.getName()).log(Level.SEVERE, null, ex);            
         }
     }
+    /**
+     * Actualizando los el archivo de swhitches y radios
+     * @param rutaFile Ruta el archivo de carga
+     * @param connection  Coneccion a la base de datos
+     */
     public void actualizar_rs_file(String rutaFile,Connection connection){
         System.out.println("Procesando:"+rutaFile);
         try {
@@ -405,6 +429,12 @@ public class Load_data {
             Logger.getLogger(Load_data.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    /**
+     * Actualizar el archivo de  de radios y switches ...
+     * @param token token para autenticar
+     * @param url_api   api 
+     * @param connection  Coneccion a la base de datos
+     */
     public void actualizar_rs(String token,String url_api,Connection connection){
     	URL url;
         int batch_size = 20;
@@ -493,14 +523,19 @@ public class Load_data {
         } catch (SQLException ex) {
             Logger.getLogger(Load_data.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
+    }    
+    /**
+     * Genera un token 
+     * @param url_api
+     * @return 
+     */
     public String getToken(String url_api)
     {
     	String token="";
         try {
-            String TOKEN_REQUEST_URL = "https://prycnmap1.claro.net.co/api/v2/access/token";
-            String CLIENT_ID = "BCpnQMEtTg7jh6Lz";
-            String CLIENT_SECRET =    "tna3EXrimdsKHoqPYPS8DIO8xx68UY";            
+            String TOKEN_REQUEST_URL = "https://localhost:8246/api/v2/access/token";
+            String CLIENT_ID = "7I6GjoJTXTdcLJEL";
+            String CLIENT_SECRET =    "d8l3kLqmkhDTxo8HSDigKhel9XpIqH";            
             OAuthClient client = new OAuthClient(new URLConnectionClient());
 
             OAuthClientRequest request =

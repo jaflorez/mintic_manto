@@ -2,6 +2,7 @@
  * 
  */
 package com.claro.WSMinticAutogestion.controller;
+
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,10 +22,6 @@ import com.claro.WSMinticAutogestion.vo.CentroDigitalVO;
 import com.claro.WSMinticAutogestion.vo.EquipoVO;
 import com.claro.WSMinticAutogestion.vo.ResponsableVO;
 
-
-
-
-
 /**
  * Clase que controla el llamado a las Clases DAO para las consultas a base de datos
  * @author Luis Bucheli
@@ -36,18 +33,21 @@ public class Controller {
 	
 	private CentroDigital centroDigital;
 	private Properties properties;
+
 	public Controller(Properties properties) {
 		super();
 		this.properties = properties;
 		// TODO Auto-generated constructor stub
 	}
 	/**
+
 	 * Metodo de Consulta de KPI de un nodo
 	 * @param nodo
 	 * @param date
 	 * @return
 	 * @throws Exception
 	 */
+
     public CentroDigital consultarCentroDigital(String idConsulta) {
     	CentroDigital  centroDigital = null;
     	try {
@@ -126,6 +126,7 @@ public class Controller {
 	 * @return
 	 * @throws Exception
 	 */
+
     public String  getTestVelocidad(String idAccessPoint) throws Exception {
     	
 		return "";

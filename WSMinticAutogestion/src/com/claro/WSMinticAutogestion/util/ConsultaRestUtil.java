@@ -44,9 +44,11 @@ import java.security.SecureRandom;
 
 
 public class ConsultaRestUtil {
+
 	public ConsultaRestUtil() {
 		
 	}
+
     public String[]  generar_tokens(String ruta,String callPy){
         try {
             String[] tokens;
@@ -60,6 +62,8 @@ public class ConsultaRestUtil {
                 long minutes = ((timestamp2.getTime() - timestamp1.getTime()) / 1000)  / 60;
                 if(minutes > 50){
                     Process p = Runtime.getRuntime().exec(callPy);
+                    p.waitFor();
+                    Thread.sleep(1000);
                 }
                 else{
                     break;
@@ -68,7 +72,10 @@ public class ConsultaRestUtil {
             return tokens;
         } catch (IOException ex) {
             Logger.getLogger(ConsultaRestUtil.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        } catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
         return null;
         
     }
@@ -97,6 +104,7 @@ public class ConsultaRestUtil {
         }
         return tokens;
     }
+    
     public Radio consultar_rd_cd(String url_p,String mac,String token) {
     	Radio radio = null;
 		String url_api = url_p.replace("[MAC]", mac);
@@ -176,6 +184,7 @@ public class ConsultaRestUtil {
 		}
 		return radio;
     }
+    
     public Switch_bts consultar_switch_bts(String url_p,String mac,String token) {
     	Switch_bts  switch_bts = null;
 		String url_api = url_p.replace("[MAC]", mac);
@@ -254,6 +263,7 @@ public class ConsultaRestUtil {
     	
     	
     }
+    
     public List<Coneccion_rt> consultar_router_conecciones(String urlApi,String ip,String usr,String psw) {
         String usernameColonPassword = usr+ ":" + psw;
         String urlApiIPN = urlApi.replace("[IP]", ip);
@@ -333,6 +343,7 @@ public class ConsultaRestUtil {
     	
     	return listaCR;
     }
+    
     public List<Interfaces_rt> consultar_router_interfaces(String urlApi,String ip,String usr,String psw) {
         String usernameColonPassword = usr+ ":" + psw;
         String urlApiIPN = urlApi.replace("[IP]", ip);
@@ -400,6 +411,7 @@ public class ConsultaRestUtil {
     	
     	return listaIR;
     }
+    
     public Router_mk consultar_router_data() {
     	Router_mk mk = new Router_mk();
     	List<Interfaces_rt>  listaIR = new ArrayList<>();
@@ -446,6 +458,7 @@ public class ConsultaRestUtil {
     	mk.setConectividad(listaCn);
     	return mk;
     }
+    
     public Radio consultar_rd_bts(String url_p,String mac,String token) {
     	Radio radio = null;
 		String url_api = url_p.replace("[MAC]", mac);
@@ -523,7 +536,6 @@ public class ConsultaRestUtil {
     	
     	
     }
-
     
 	public AccessPoint consultar_ap(String url_p,String mac,String token,String tipo) {
 		

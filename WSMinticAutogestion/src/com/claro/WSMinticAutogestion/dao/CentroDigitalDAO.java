@@ -13,10 +13,12 @@ import com.claro.WSMinticAutogestion.vo.ResponsableVO;
 
 public class CentroDigitalDAO {
 	private Connection connection;
+
 	public CentroDigitalDAO(Connection connection)  throws SQLException, ClassNotFoundException 
 	{
 		this.connection = connection;
 	}
+
 	public CentroDigitalVO findById(String id_beneficiario){
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet;
@@ -52,6 +54,7 @@ public class CentroDigitalDAO {
 		}
 		return centroDigitalVO;
 	}
+
 	public List<EquipoVO> listEquipoByIdBeneficiario(String id_beneficiario) {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet;
@@ -79,6 +82,7 @@ public class CentroDigitalDAO {
 		}
 		return listaEquipo;
 	}
+
 	public List<ResponsableVO> listResponsablesByIdBeneficiario(String id_beneficiario){
 		List<ResponsableVO> listaResponsable = new ArrayList<>(); 
 		PreparedStatement preparedStatement = null;
@@ -107,7 +111,5 @@ public class CentroDigitalDAO {
 		}
 		return listaResponsable;
 	}
-	
-	
 
 }
