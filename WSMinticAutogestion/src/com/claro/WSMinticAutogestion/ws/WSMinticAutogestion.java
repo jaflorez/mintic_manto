@@ -72,5 +72,42 @@ public class WSMinticAutogestion {
 	  json = gson.toJson(objCentro);
 	  return Response.status(201).entity(json).build();
 	}
+	@POST
+	@Path("/consultaSpeedTest")
+	public Response consultaSpeedTest (InputStream consulta)  {
+	  String json = "";
+	  CentroDigital objCentro = new CentroDigital();
+	  try {
+		  InputStream input = this.context.getResourceAsStream("/WEB-INF/WSMinticAutoatencion.properties");
+		  Properties properties = new Properties();
+		  properties.load(input);
+		  BufferedReader rd = new BufferedReader(new InputStreamReader(consulta));
+		  JSONParser jp = new JSONParser();
+		  String line = "";
+		  String jsonRequest = "";
+		  while((line = rd.readLine()) != null){
+			  jsonRequest = jsonRequest+line.trim();
+		  }
+		  JSONObject jso = (JSONObject)jp.parse(jsonRequest);
+		  String usuario = jso.get("usuario").toString();
+		  String mac = jso.get("mac").toString();
+		  String forzado = jso.get("forzado").toString();
+		  
+		  
+		  controller = new Controller(properties);
+		  try {
+			  objCentro = controller.consultarCentroDigital("23");
+		  } catch (Exception e) {
+			  e.printStackTrace();
+		  }
+	  }
+	  catch (Exception e) {
+		  System.out.println("Exception: "+e.toString());
+		  e.printStackTrace();
+	  }
+	  Gson gson = new Gson();
+	  json = gson.toJson(objCentro);
+	  return Response.status(201).entity(json).build();
+	}
 
 }

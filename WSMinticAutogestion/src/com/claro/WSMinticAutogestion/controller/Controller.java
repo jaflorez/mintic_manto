@@ -16,6 +16,7 @@ import com.claro.WSMinticAutogestion.json.Coneccion_rt;
 import com.claro.WSMinticAutogestion.json.Interfaces_rt;
 import com.claro.WSMinticAutogestion.json.Radio;
 import com.claro.WSMinticAutogestion.json.Router_mk;
+import com.claro.WSMinticAutogestion.json.SpeedTest;
 import com.claro.WSMinticAutogestion.json.Switch_bts;
 import com.claro.WSMinticAutogestion.util.ConsultaRestUtil;
 import com.claro.WSMinticAutogestion.vo.CentroDigitalVO;
@@ -127,8 +128,9 @@ public class Controller {
 	 * @throws Exception
 	 */
 
-    public String  getTestVelocidad(String idAccessPoint) throws Exception {
+    public SpeedTest  getTestVelocidad(String idAccessPoint) throws Exception {
     	
-		return "";
+    	
+		return null;
 	}
 }

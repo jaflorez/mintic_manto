@@ -84,7 +84,7 @@ public class Load_data {
             load_data.actualizar_ap(tokens[2],prop.getProperty("URL_AP2_LST"),2,con);
             load_data.actualizar_aps(con);
             /*Se ajusta temporalmente mientra se resuelve la conexion al servidor*/
-            load_data.actualizar_rs_file(prop.getProperty("PATH_FILES")+"//cnMaestro-device.xlsx" ,con);
+            load_data.actualizar_radios_switch_cnmaestro(prop.getProperty("PATH_FILES")+"//cnMaestro-device.xlsx" ,con);
             Connection con_resp = Utilidades.getConection(prop.getProperty("DB_RESP_STR_CONNECTION"), prop.getProperty("DB_RESP_USER"), prop.getProperty("DB_RESP_PWD"));
             load_data.actualizar_responsables(con_resp, con);
             con_resp.close();
@@ -125,42 +125,43 @@ public class Load_data {
                 rowIterator.next();
                 while (rowIterator.hasNext()) {
                     Row row = rowIterator.next();
-                    for(int contador_fld=1;contador_fld<=103;contador_fld++){
-                        if(row.getCell(contador_fld) != null ){
-                            switch (row.getCell(contador_fld).getCellTypeEnum()){
-                                case BLANK:
-                                    statement.setNull(contador_fld, java.sql.Types.NULL);
-                                    break;
-                                case STRING:
-                                    statement.setString(contador_fld, row.getCell(contador_fld).getStringCellValue());
-                                    break;
-                                case NUMERIC:
-                                    NumberFormat nf = NumberFormat.getNumberInstance();
-                                    nf.setMaximumFractionDigits(0);
-                                    String rounded = nf.format(row.getCell(contador_fld).getNumericCellValue());
-                                    rounded = rounded.replace(".", "");
-                                    statement.setString(contador_fld,rounded);
-                                    break;
-                                case BOOLEAN:
-                                    statement.setString(contador_fld, "Bool");
-                                    break;
-                                default:
-                                    statement.setString(contador_fld, "str");
-                                    break;
-                           }
+                    try {
+                        for(int contador_fld=1;contador_fld<=103;contador_fld++){
+                            if(row.getCell(contador_fld) != null ){
+                                switch (row.getCell(contador_fld).getCellTypeEnum()){
+                                    case BLANK:
+                                        statement.setNull(contador_fld, java.sql.Types.NULL);
+                                        break;
+                                    case STRING:
+                                        statement.setString(contador_fld, row.getCell(contador_fld).getStringCellValue());
+                                        break;
+                                    case NUMERIC:
+                                        NumberFormat nf = NumberFormat.getNumberInstance();
+                                        nf.setMaximumFractionDigits(0);
+                                        String rounded = nf.format(row.getCell(contador_fld).getNumericCellValue());
+                                        rounded = rounded.replace(".", "");
+                                        statement.setString(contador_fld,rounded);
+                                        break;
+                                    case BOOLEAN:
+                                        statement.setString(contador_fld, "Bool");
+                                        break;
+                                    default:
+                                        statement.setString(contador_fld, "str");
+                                        break;
+                               }
+                            }
+                            else{
+                                statement.setNull(contador_fld, java.sql.Types.NULL);
+                            }
                         }
-                        else{
-                            statement.setNull(contador_fld, java.sql.Types.NULL);
-                        }
+                        statement.execute();
+                        counter++;
+                    } catch (SQLException ex) {
+                        Logger.getLogger(Load_data.class.getName()).log(Level.SEVERE, null, ex);        
+                        System.out.println(ex);
                     }
-                    statement.addBatch();
-                    counter++;
-                    if(counter % batch_size == 0){
-                        statement.executeBatch();
-                    }                
                 }
                 myWorkBook.close();
-                statement.executeBatch();
                 fis.close();
                 myFile.delete();
                 sql = "CALL sp_update_generador_scripts();";
@@ -175,6 +176,7 @@ public class Load_data {
         } 
         catch (FileNotFoundException ex) {
             Logger.getLogger(Load_data.class.getName()).log(Level.SEVERE, null, ex);        
+            System.out.println(ex);
         } catch (IOException | SQLException ex) {
             Logger.getLogger(Load_data.class.getName()).log(Level.SEVERE, null, ex);
             System.out.println(ex);
@@ -365,7 +367,7 @@ public class Load_data {
      * @param rutaFile Ruta el archivo de carga
      * @param connection  Coneccion a la base de datos
      */
-    public void actualizar_rs_file(String rutaFile,Connection connection){
+    public void actualizar_radios_switch_cnmaestro(String rutaFile,Connection connection){
         System.out.println("Procesando:"+rutaFile);
         try {
             
@@ -375,10 +377,10 @@ public class Load_data {
                 XSSFWorkbook myWorkBook = new XSSFWorkbook (fis);
                 XSSFSheet mySheet = myWorkBook.getSheetAt(0);
                 Iterator<Row> rowIterator = mySheet.iterator();                
-                String sql ="DELETE FROM tmp_rd_sw";
+                String sql ="DELETE FROM tmp_radios_switch_cnmaestro";
                 PreparedStatement statement = connection.prepareStatement(sql); 
                 statement.execute();
-                sql = "INSERT INTO mintic.tmp_rd_sw(managed_account,mac,device_name,ip_address,ipv6_address,device_type,serial_number,description,active_sw_version,duration,status,status_time,status_time_seconds,height)VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
+                sql = "INSERT INTO tmp_radios_switch_cnmaestro(managed_account,mac,device_name,ip_address,ipv6_address,device_type,serial_number,description,active_sw_version,duration,status,status_time,status_time_seconds,height)VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
                 rowIterator.next();
                 while (rowIterator.hasNext()) {
                     Row row = rowIterator.next();
@@ -416,7 +418,7 @@ public class Load_data {
                 myWorkBook.close();
                 fis.close();
                 myFile.delete();          
-                sql = "CALL sp_update_sw_rs();";
+                sql = "CALL sp_update_radios_switch_cnmaestro();";
                 statement = connection.prepareStatement(sql); 
                 statement.execute();
             }
@@ -435,7 +437,7 @@ public class Load_data {
      * @param url_api   api 
      * @param connection  Coneccion a la base de datos
      */
-    public void actualizar_rs(String token,String url_api,Connection connection){
+    public void actualizar_radios_switch(String token,String url_api,Connection connection){
     	URL url;
         int batch_size = 20;
         int counter = 0;
@@ -480,12 +482,12 @@ public class Load_data {
             String sql = "DELETE FROM tmp_rs;";
             PreparedStatement statement = connection.prepareStatement(sql); 
             statement.execute();
-            sql = "INSERT INTO mintic.tmp_rs(name_rs,ip,network,product,type,mac,mode,tower,status) VALUES(?,?,?,?,?,?,?,?,?);";
+            sql = "INSERT INTO tmp_radios_switch(name_rs,ip,network,product,type,mac,mode,tower,status) VALUES(?,?,?,?,?,?,?,?,?);";
             statement = connection.prepareStatement(sql); 
             int contador = 0;
             while (iterator.hasNext()) {
                 try{
-                    sql = "INSERT INTO mintic.tmp_rs(name_rs,ip,network,product,type,mac,mode,tower,status,description) VALUES(?,?,?,?,?,?,?,?,?,?);";
+                    sql = "INSERT INTO tmp_radios_switch_api(name_rs,ip,network,product,type,mac,mode,tower,status,description) VALUES(?,?,?,?,?,?,?,?,?,?);";
                     statement = connection.prepareStatement(sql); 
                     JSONObject jsChildObj = iterator.next();
                     statement.setString(1, (jsChildObj.get("name") != null)? jsChildObj.get("name").toString():"");
@@ -558,7 +560,7 @@ public class Load_data {
     }
     public void actualizar_aps(Connection connection){
         try {
-            String sql = "CALL  sp_update_ap();";
+            String sql = "CALL  sp_update_access_point();";
             PreparedStatement statement = connection.prepareStatement(sql); 
             statement.execute();
         } catch (SQLException ex) {
