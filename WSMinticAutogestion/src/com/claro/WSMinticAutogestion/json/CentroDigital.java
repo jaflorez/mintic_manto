@@ -11,6 +11,7 @@ public class CentroDigital {
 	private String municipio;
 	private String departamento;
 	private String vlan;
+	private String ap_id;
 	private Radio radio_cd;
 	private Radio radio_bts;
 	private Router_mk router_mk;
@@ -18,6 +19,7 @@ public class CentroDigital {
 	private List<Coneccion_rt> conectividad;
 	private List<AccessPoint> aps;
 	private List<ResponsableVO> responsables;
+	
 	public String getId_beneficiario() {
 		return id_beneficiario;
 	}
@@ -96,5 +98,12 @@ public class CentroDigital {
 	public void setAps(List<AccessPoint> aps) {
 		this.aps = aps;
 	}
+	public String getAp_id() {
+		return ap_id;
+	}
+	public void setAp_id(String ap_id) {
+		this.ap_id = ap_id;
+	}
+	
 	
 }

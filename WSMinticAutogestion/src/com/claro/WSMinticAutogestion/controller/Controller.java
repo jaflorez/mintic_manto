@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import com.claro.WSMinticAutogestion.dao.CallSpeedTestDAO;
 import com.claro.WSMinticAutogestion.dao.CentroDigitalDAO;
 import com.claro.WSMinticAutogestion.dao.MinticDAO;
 import com.claro.WSMinticAutogestion.json.AccessPoint;
@@ -16,12 +17,18 @@ import com.claro.WSMinticAutogestion.json.Coneccion_rt;
 import com.claro.WSMinticAutogestion.json.Interfaces_rt;
 import com.claro.WSMinticAutogestion.json.Radio;
 import com.claro.WSMinticAutogestion.json.Router_mk;
-import com.claro.WSMinticAutogestion.json.SpeedTest;
+import com.claro.WSMinticAutogestion.json.SpeedTestResult;
 import com.claro.WSMinticAutogestion.json.Switch_bts;
 import com.claro.WSMinticAutogestion.util.ConsultaRestUtil;
+import com.claro.WSMinticAutogestion.util.ConsultaSoapUtil;
+import com.claro.WSMinticAutogestion.vo.CallSpeedTestVO;
 import com.claro.WSMinticAutogestion.vo.CentroDigitalVO;
 import com.claro.WSMinticAutogestion.vo.EquipoVO;
 import com.claro.WSMinticAutogestion.vo.ResponsableVO;
+import com.claro.WSMinticAutogestion.vo.SpeedTestVO;
+import com.claro.WSMinticAutogestion.vo.StResultsVO;
+import com.claro.WSMinticSpeedTest.dao.STResultsDAO;
+import com.claro.WSMinticSpeedTest.dao.SpeedTestDAO;
 
 /**
  * Clase que controla el llamado a las Clases DAO para las consultas a base de datos
@@ -52,8 +59,9 @@ public class Controller {
     public CentroDigital consultarCentroDigital(String idConsulta) {
     	CentroDigital  centroDigital = null;
     	try {
-    		
-        	MinticDAO minticDAO = new MinticDAO();
+        	ConsultaSoapUtil consultaSoapUtil = new ConsultaSoapUtil();
+        	consultaSoapUtil.ActualizarAPID(this.properties.getProperty("SCRIPT_GET_AP_ID"), idConsulta);
+    		MinticDAO minticDAO = new MinticDAO();
         	Connection connection = minticDAO.getConnection(this.properties.getProperty("DB_STR_CONNECTION"),this.properties.getProperty("DB_USER"),this.properties.getProperty("DB_PWD"));
         	centroDigital = new CentroDigital();
         	CentroDigitalDAO centroDigitalDAO = new CentroDigitalDAO(connection);
@@ -72,6 +80,7 @@ public class Controller {
         	centroDigital.setVlan(centroDigitalVO.getVlan());
         	centroDigital.setDepartamento(centroDigitalVO.getDepartamento());
         	centroDigital.setResponsables(centroDigitalVO.getResponsables());
+        	centroDigital.setAp_id(centroDigitalVO.getAp_id());
         	List<AccessPoint>  listaAP = new ArrayList<>();
         	ConsultaRestUtil consultaRestUtil = new ConsultaRestUtil();
         	String[] tokens  =  consultaRestUtil.generar_tokens(this.properties.getProperty("PATH_TOKENS"),this.properties.getProperty("SCRIPT_TOKENS"));
@@ -105,14 +114,13 @@ public class Controller {
         	List<Coneccion_rt> conecciones = consultaRestUtil.consultar_router_conecciones(this.properties.getProperty("URL_RT_CONECTION"),ip_clt,this.properties.getProperty("URL_RT_USR"),this.properties.getProperty("URL_RT_PSW"));
         	router_mk.setConectividad(conecciones);
         	centroDigital.setRouter_mk(router_mk);
-        	
         	if(rd_cd != null) {
         		if(rd_cd.getAp_mac() != null ) {
         			Switch_bts switch_bts = consultaRestUtil.consultar_switch_bts(this.properties.getProperty("URL_SW_BT_CLT"),rd_cd.getAp_mac(),tokens[0]);
         			centroDigital.setSwitch_bts(switch_bts);
         		}
         	}
-        	System.out.println("fin");
+        	
         	return centroDigital;
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -128,9 +136,38 @@ public class Controller {
 	 * @throws Exception
 	 */
 
-    public SpeedTest  getTestVelocidad(String idAccessPoint) throws Exception {
-    	
-    	
-		return null;
+    public SpeedTestResult  getTestVelocidad(String user_id,String ap_id,String fecha_solicitud) throws Exception {
+    	SpeedTestResult speedTestResult = null;
+    	MinticDAO minticDAO = new MinticDAO();
+    	ConsultaRestUtil consultaRestUtil = new ConsultaRestUtil();
+    	Connection connection = minticDAO.getConnection(this.properties.getProperty("DB_STR_CONNECTION"),this.properties.getProperty("DB_USER"),this.properties.getProperty("DB_PWD"));
+    	CallSpeedTestDAO callSpeedTestDAO = new CallSpeedTestDAO(connection);
+    	CallSpeedTestVO callSpeedTestVo = callSpeedTestDAO.FindByUserApid(user_id, ap_id);
+    	if(callSpeedTestVo == null) {/*No existe una solicitud pendiente*/
+    		ConsultaSoapUtil consultaSoapUtil = new ConsultaSoapUtil();
+    		consultaSoapUtil.llamar_speed_test(this.properties.getProperty("SCRIPT_SPEED_TEST"), user_id, ap_id, fecha_solicitud);
+    		speedTestResult =  new SpeedTestResult(user_id,ap_id,"corriendo",fecha_solicitud); 
+    	}
+    	else {
+    		SpeedTestDAO speedTestDAO = new SpeedTestDAO();
+    		//Connection connection2 =speedTestDAO.getConnection(this.properties.getProperty("DB_GEST_STR_CONNECTION"),this.properties.getProperty("DB_GEST_USER"), this.properties.getProperty("DB_GEST_PWD"));
+    		Connection connection_gestionate =speedTestDAO.getConnection(this.properties.getProperty("DB_GEST_STR_CONNECTION"),this.properties.getProperty("DB_GEST_USER"), this.properties.getProperty("DB_GEST_PWD"));
+    		if(connection_gestionate != null) {
+        		STResultsDAO stResultsDAO = new STResultsDAO(connection_gestionate);
+        		StResultsVO stResultsVO =stResultsDAO.GetByWorkFlowId(callSpeedTestVo.getWorkflow_process_id());
+        		if(stResultsVO != null) {
+        			speedTestResult =  new SpeedTestResult(user_id,ap_id,"listo",callSpeedTestVo.getFecha_solicitud().toString());
+        			speedTestResult.setStResultVO(stResultsVO);
+        			callSpeedTestDAO.UpdateCallSpeedTestVO(user_id, ap_id, "listo"); 
+        		}
+        		else {
+        			speedTestResult =  new SpeedTestResult(user_id,ap_id,"corriendo",callSpeedTestVo.getFecha_solicitud().toString());
+        		}
+    		}
+    		else {
+    			throw new Exception("Error en la conexion a base de datos de Gestionate");
+    		}
+    	}
+    	return speedTestResult;
 	}
 }

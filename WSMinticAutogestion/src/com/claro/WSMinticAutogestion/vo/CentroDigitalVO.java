@@ -12,12 +12,13 @@ public class CentroDigitalVO {
 	private String vlan;
 	private String ip_router;
 	private int	server_data;
+	private String ap_id;
 	private List<EquipoVO> equipos;
 	private List<ResponsableVO> responsables;
 	public CentroDigitalVO() {
 		
 	}
-	public CentroDigitalVO(String id_beneficiario,String llave,String id_mintic,String nombre_ct_pob,String municipio,String departamento,String vlan,String ip_router,int	server_data) {
+	public CentroDigitalVO(String id_beneficiario,String llave,String id_mintic,String nombre_ct_pob,String municipio,String departamento,String vlan,String ip_router,int	server_data,String ap_id) {
 		this.id_beneficiario=id_beneficiario;
 	    this.llave=llave;
 	    this.id_mintic=id_mintic;
@@ -27,6 +28,8 @@ public class CentroDigitalVO {
 		this.vlan=vlan;
 		this.ip_router=ip_router;
 		this.server_data=server_data;
+		this.ap_id = ap_id;
+		
 	}
 	public String getId_beneficiario() {
 		return id_beneficiario;
@@ -93,6 +96,12 @@ public class CentroDigitalVO {
 	}
 	public void setResponsables(List<ResponsableVO> responsables) {
 		this.responsables = responsables;
+	}
+	public String getAp_id() {
+		return ap_id;
+	}
+	public void setAp_id(String ap_id) {
+		this.ap_id = ap_id;
 	}
 	
 	

@@ -48,6 +48,20 @@ public class ConsultaRestUtil {
 	public ConsultaRestUtil() {
 		
 	}
+    public void  generar_speed_test(String id_beneficiario,String usuario,String callPy){
+        try {
+            while(true){
+                Process p = Runtime.getRuntime().exec(callPy + " " + id_beneficiario + " " + usuario);
+                p.waitFor();
+                Thread.sleep(1000);
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(ConsultaRestUtil.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
 
     public String[]  generar_tokens(String ruta,String callPy){
         try {

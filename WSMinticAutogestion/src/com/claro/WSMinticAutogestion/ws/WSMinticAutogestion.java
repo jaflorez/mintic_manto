@@ -18,6 +18,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import com.claro.WSMinticAutogestion.controller.Controller;
+import com.claro.WSMinticAutogestion.json.SpeedTestResult;
 import com.claro.WSMinticAutogestion.json.CentroDigital;
 
 import com.google.gson.Gson;
@@ -76,7 +77,8 @@ public class WSMinticAutogestion {
 	@Path("/consultaSpeedTest")
 	public Response consultaSpeedTest (InputStream consulta)  {
 	  String json = "";
-	  CentroDigital objCentro = new CentroDigital();
+	  SpeedTestResult objCallSpeedTest = new SpeedTestResult();
+	  
 	  try {
 		  InputStream input = this.context.getResourceAsStream("/WEB-INF/WSMinticAutoatencion.properties");
 		  Properties properties = new Properties();
@@ -89,14 +91,13 @@ public class WSMinticAutogestion {
 			  jsonRequest = jsonRequest+line.trim();
 		  }
 		  JSONObject jso = (JSONObject)jp.parse(jsonRequest);
-		  String usuario = jso.get("usuario").toString();
-		  String mac = jso.get("mac").toString();
-		  String forzado = jso.get("forzado").toString();
-		  
-		  
+		  String user_id = jso.get("user_id").toString();
+		  String ap_id = jso.get("ap_id").toString();
+		  String fecha_solicitud = jso.get("fecha_solicitud").toString();
 		  controller = new Controller(properties);
 		  try {
-			  objCentro = controller.consultarCentroDigital("23");
+			  objCallSpeedTest = controller.getTestVelocidad(user_id, ap_id,fecha_solicitud);
+			  
 		  } catch (Exception e) {
 			  e.printStackTrace();
 		  }
@@ -106,7 +107,7 @@ public class WSMinticAutogestion {
 		  e.printStackTrace();
 	  }
 	  Gson gson = new Gson();
-	  json = gson.toJson(objCentro);
+	  json = gson.toJson(objCallSpeedTest);
 	  return Response.status(201).entity(json).build();
 	}
 
