@@ -32,6 +32,25 @@ def registrar_ap_id(properties,ap_id):
     except Exception as e:
         print(e)
     return process_id
+def existe_llamada_anterior(properties,usuario,ap_id):
+    try:
+        respuesta = True
+        database = properties['DB_STR_CONNECTION'].split('jdbc:mysql://')[1].split("/")[1].split("?")[0]
+        server= properties['DB_STR_CONNECTION'].split('jdbc:mysql://')[1].split(":")[0]
+        mydb = mysql.connector.connect(host=server,user=properties['DB_USER'],password=properties['DB_PWD'], database=database)
+        strSql = "select count(*) as num_sol from speed_test_call where usuario='{0}' and ap_id = '{1}' and estado = 'registro';".format(usuario,ap_id)
+        cursor = mydb.cursor()
+        cursor.execute(strSql)
+        records = cursor.fetchall()
+        for x in records:
+            if(x[0] == 0):
+                respuesta = False
+            else:
+                respuesta = True
+    except Exception as ex:
+        print(ex)
+    return respuesta
+    
 def registrar_speed_test_call(properties,usuario,ap_id,wk_flow_id,fecha_solicitud):
     try:
         database = properties['DB_STR_CONNECTION'].split('jdbc:mysql://')[1].split("/")[1].split("?")[0]
@@ -98,5 +117,8 @@ def read_properties(file_path):
     return keys        
 if __name__ == '__main__':
     properties=read_properties("MinticAutoatencion.properties")
-    main(properties,usuario,ap_id)
+    if(existe_llamada_anterior(properties,usuario,ap_id) ):
+        print("Existe")
+    else:
+        main(properties,usuario,ap_id)
 
