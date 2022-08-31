@@ -151,7 +151,15 @@ public class Controller {
     	else {
     		SpeedTestDAO speedTestDAO = new SpeedTestDAO();
     		//Connection connection2 =speedTestDAO.getConnection(this.properties.getProperty("DB_GEST_STR_CONNECTION"),this.properties.getProperty("DB_GEST_USER"), this.properties.getProperty("DB_GEST_PWD"));
-    		Connection connection_gestionate =speedTestDAO.getConnection(this.properties.getProperty("DB_GEST_STR_CONNECTION"),this.properties.getProperty("DB_GEST_USER"), this.properties.getProperty("DB_GEST_PWD"));
+    		
+    		Connection connection_gestionate = null;
+    		if (this.properties.getProperty("DB_GEST_STR_CONNECTION").equals("")) {
+    			System.out.println("My Sql");
+    			connection_gestionate = connection;
+    		}else {
+    			System.out.println("Sql Server");
+    			connection_gestionate=speedTestDAO.getConnection(this.properties.getProperty("DB_GEST_STR_CONNECTION"),this.properties.getProperty("DB_GEST_USER"), this.properties.getProperty("DB_GEST_PWD"));
+    		}
     		if(connection_gestionate != null) {
         		STResultsDAO stResultsDAO = new STResultsDAO(connection_gestionate);
         		StResultsVO stResultsVO =stResultsDAO.GetByWorkFlowId(callSpeedTestVo.getWorkflow_process_id());

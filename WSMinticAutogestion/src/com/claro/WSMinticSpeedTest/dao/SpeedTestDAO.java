@@ -8,9 +8,6 @@ public class SpeedTestDAO {
 	public  Connection getConnection(String urlServer,String username,String password) {
 		Connection connection = null;
 		try {
-			System.out.println(urlServer);
-			System.out.println("user:"+username);
-			System.out.println("psw:"+password);
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
             connection = DriverManager.getConnection(urlServer,username, password);
 		} 
