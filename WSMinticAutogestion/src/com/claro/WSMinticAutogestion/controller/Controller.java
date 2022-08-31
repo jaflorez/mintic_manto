@@ -4,6 +4,8 @@
 package com.claro.WSMinticAutogestion.controller;
 
 import java.sql.Connection;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -137,39 +139,39 @@ public class Controller {
 	 */
 
     public SpeedTestResult  getTestVelocidad(String user_id,String ap_id,String fecha_solicitud) throws Exception {
+		String pattern = "yyyy-MM-dd HH:mm:ss";
+		DateFormat df = new SimpleDateFormat(pattern);
     	SpeedTestResult speedTestResult = null;
     	MinticDAO minticDAO = new MinticDAO();
     	ConsultaRestUtil consultaRestUtil = new ConsultaRestUtil();
     	Connection connection = minticDAO.getConnection(this.properties.getProperty("DB_STR_CONNECTION"),this.properties.getProperty("DB_USER"),this.properties.getProperty("DB_PWD"));
     	CallSpeedTestDAO callSpeedTestDAO = new CallSpeedTestDAO(connection);
     	CallSpeedTestVO callSpeedTestVo = callSpeedTestDAO.FindByUserApid(user_id, ap_id);
+    	
     	if(callSpeedTestVo == null) {/*No existe una solicitud pendiente*/
     		ConsultaSoapUtil consultaSoapUtil = new ConsultaSoapUtil();
     		consultaSoapUtil.llamar_speed_test(this.properties.getProperty("SCRIPT_SPEED_TEST"), user_id, ap_id, fecha_solicitud);
     		speedTestResult =  new SpeedTestResult(user_id,ap_id,"corriendo",fecha_solicitud); 
     	}
     	else {
+    		String fecha_solicitud_ft = df.format(callSpeedTestVo.getFecha_solicitud());
     		SpeedTestDAO speedTestDAO = new SpeedTestDAO();
-    		//Connection connection2 =speedTestDAO.getConnection(this.properties.getProperty("DB_GEST_STR_CONNECTION"),this.properties.getProperty("DB_GEST_USER"), this.properties.getProperty("DB_GEST_PWD"));
-    		
     		Connection connection_gestionate = null;
     		if (this.properties.getProperty("DB_GEST_STR_CONNECTION").equals("")) {
-    			System.out.println("My Sql");
     			connection_gestionate = connection;
     		}else {
-    			System.out.println("Sql Server");
     			connection_gestionate=speedTestDAO.getConnection(this.properties.getProperty("DB_GEST_STR_CONNECTION"),this.properties.getProperty("DB_GEST_USER"), this.properties.getProperty("DB_GEST_PWD"));
     		}
     		if(connection_gestionate != null) {
         		STResultsDAO stResultsDAO = new STResultsDAO(connection_gestionate);
         		StResultsVO stResultsVO =stResultsDAO.GetByWorkFlowId(callSpeedTestVo.getWorkflow_process_id());
         		if(stResultsVO != null) {
-        			speedTestResult =  new SpeedTestResult(user_id,ap_id,"listo",callSpeedTestVo.getFecha_solicitud().toString());
+        			speedTestResult =  new SpeedTestResult(user_id,ap_id,"listo",fecha_solicitud_ft);
         			speedTestResult.setStResultVO(stResultsVO);
         			callSpeedTestDAO.UpdateCallSpeedTestVO(user_id, ap_id, "listo"); 
         		}
         		else {
-        			speedTestResult =  new SpeedTestResult(user_id,ap_id,"corriendo",callSpeedTestVo.getFecha_solicitud().toString());
+        			speedTestResult =  new SpeedTestResult(user_id,ap_id,"corriendo",fecha_solicitud_ft);
         		}
     		}
     		else {

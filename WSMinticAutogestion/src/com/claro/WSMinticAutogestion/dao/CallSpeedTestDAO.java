@@ -22,7 +22,6 @@ public class CallSpeedTestDAO {
 		this.connection = connection;
 	}
 	public CallSpeedTestVO FindByUserApid(String user_id,String ap_id) {
-
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet;
 		CallSpeedTestVO callSpeedTest = null;
@@ -36,7 +35,7 @@ public class CallSpeedTestDAO {
 				preparedStatement.setString(2, ap_id);
 				resultSet = preparedStatement.executeQuery();
 				if (resultSet.next()) {
-					callSpeedTest = new CallSpeedTestVO(resultSet.getLong(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getDate(5), resultSet.getString(6),resultSet.getDate(7));
+					callSpeedTest = new CallSpeedTestVO(resultSet.getLong(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getDate(5), resultSet.getString(6), resultSet.getTimestamp(7));
 				}
 				if(!resultSet.isClosed()) {
 					resultSet.close();
