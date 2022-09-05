@@ -38,7 +38,7 @@ def existe_llamada_anterior(properties,usuario,ap_id):
         database = properties['DB_STR_CONNECTION'].split('jdbc:mysql://')[1].split("/")[1].split("?")[0]
         server= properties['DB_STR_CONNECTION'].split('jdbc:mysql://')[1].split(":")[0]
         mydb = mysql.connector.connect(host=server,user=properties['DB_USER'],password=properties['DB_PWD'], database=database)
-        strSql = "select count(*) as num_sol from speed_test_call where usuario='{0}' and ap_id = '{1}' and estado = 'registro';".format(usuario,ap_id)
+        strSql = "select count(*) as num_sol from speed_test_call where usuario='{0}' and ap_id = '{1}' and estado = 'registro' and year(fecha) = year(now()) and month(fecha) = month(now()) and day(fecha) = day(now()) ;".format(usuario,ap_id)
         cursor = mydb.cursor()
         cursor.execute(strSql)
         records = cursor.fetchall()
@@ -120,5 +120,6 @@ if __name__ == '__main__':
     if(existe_llamada_anterior(properties,usuario,ap_id) ):
         print("Existe")
     else:
+        print("LLama uno nuevo")
         main(properties,usuario,ap_id)
 

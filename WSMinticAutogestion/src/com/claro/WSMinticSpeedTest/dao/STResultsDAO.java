@@ -24,7 +24,7 @@ public class STResultsDAO {
 				+ ",result_upload_mbps,result_latency_ms,result_jitter_ms"
 				+ ",result_start_date,result_end_date,result_code,result_execution"
 				+ ",test_type,workflow_process_id,result_message  "
-				+ "FROM 	STResults   WHERE 	workflow_process_id = ? ";
+				+ "FROM 	STResults   WHERE 	workflow_process_id = ? and result_execution != 'running' ";
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet;
 		try {
