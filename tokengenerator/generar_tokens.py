@@ -16,6 +16,8 @@ def read_properties(file_path):
     return keys
 def main(properties):
     #servidor RS
+    
+    
     json_1 = open(properties["PATH_CRD_RS"])
     token_json = json.load(json_1)
     access_token_url =  properties["URL_TK_RS"]
@@ -23,6 +25,10 @@ def main(properties):
     oauth = OAuth2Session(client=client)
     token = oauth.fetch_token(token_url=access_token_url, client_id=token_json['client_id'], client_secret=token_json['client_secret'], verify=ssl.CERT_NONE)
     access_tokenrs = token['access_token']
+    
+    
+    ## servidor access point 2
+    
     json_1 = open(properties["PATH_CRD_AP1"])
     token_json = json.load(json_1)
     access_token_url =  properties["URL_TK_AP1"]

@@ -4,36 +4,50 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.rmi.RemoteException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import com.claro.WSMinticAutogestion.vo.CallSpeedTestVO;
+
+import co.com.claro.www.speedtest.ManageAPSearchingSoapProxy;
+import co.com.claro.www.speedtest.SearchAPByTextResult;
+import co.com.claro.www.workflow.RunSpeedTestOnDemandWorkflowSoapProxy;
+import co.com.claro.www.workflow.TrackingIDAndProcessID;
 
 public class ConsultaSoapUtil {
 
 	public ConsultaSoapUtil() {
 		super();
 	}
-	public void ActualizarAPID(String path_py_ap_id, String centro_digital_id) {
-        try {
-        	System.out.println(path_py_ap_id + " "+ centro_digital_id);
-            Process p = Runtime.getRuntime().exec(path_py_ap_id + " "+ centro_digital_id );
-            p.waitFor();
-        } catch (IOException ex) {
-            Logger.getLogger(ConsultaRestUtil.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InterruptedException e) {
+	public int ConsultarApId(String url_speed_test, String findId) {
+		int response= 0;
+		try {
+			System.out.println(url_speed_test + ":" + findId);
+			ManageAPSearchingSoapProxy prx = new ManageAPSearchingSoapProxy(url_speed_test);
+			SearchAPByTextResult apByTextResult;
+			apByTextResult = prx.searchAPByText(findId, 50);
+			response = apByTextResult.getAPFound()[0].getAp_id();
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
-			Logger.getLogger(ConsultaRestUtil.class.getName()).log(Level.SEVERE, null, e);
 		}
+		return response;
 	}
-	public void llamar_speed_test(String path_script_speed_tet,String usuario,String ap_id,String fecha_solicitud) {
-        try {
-            Process p = Runtime.getRuntime().exec(path_script_speed_tet + " "+ usuario + " " + ap_id + " \"" + fecha_solicitud +"\"");
-            p.waitFor();
-        } catch (IOException ex) {
-            Logger.getLogger(ConsultaRestUtil.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InterruptedException e) {
+	public CallSpeedTestVO llamar_speed_test(String url_speed_test,String mail_speed_test,String ap_id) {
+		CallSpeedTestVO callSpeedTestVo = null;
+		RunSpeedTestOnDemandWorkflowSoapProxy workflowSoapProxy = new RunSpeedTestOnDemandWorkflowSoapProxy(url_speed_test);
+		int apid = Integer.parseInt(ap_id);
+		int APListIDs[] = {apid};
+		TrackingIDAndProcessID processID;
+		try {
+			processID = workflowSoapProxy.executeAndReturnPID(APListIDs, mail_speed_test);
+			callSpeedTestVo = new CallSpeedTestVO(ap_id,processID.getProcessID(),"registro");
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
-			Logger.getLogger(ConsultaRestUtil.class.getName()).log(Level.SEVERE, null, e);
 		}
+		return callSpeedTestVo;
 	}
 	
 	

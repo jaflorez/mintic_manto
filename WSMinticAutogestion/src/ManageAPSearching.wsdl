@@ -1,0 +1,536 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="www.claro.com.co" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" targetNamespace="www.claro.com.co" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="www.claro.com.co">
+      <s:element name="NoAction">
+        <s:complexType />
+      </s:element>
+      <s:element name="NoActionResponse">
+        <s:complexType />
+      </s:element>
+      <s:element name="SearchAPByText">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="TextToSearch" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="MaxRows" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SearchAPByTextResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="SearchAPByTextResult" type="tns:SearchAPByTextResult" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="SearchAPByTextResult">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="ExitCode" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="ErrorMessage" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="APFound" type="tns:ArrayOfSearchAPResultObject" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfSearchAPResultObject">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="SearchAPResultObject" nillable="true" type="tns:SearchAPResultObject" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="SearchAPResultObject">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="ap_id" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="ap_hostname" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="ap_ip" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="ap_type" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="ap_model" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="bw_download" type="s:decimal" />
+          <s:element minOccurs="1" maxOccurs="1" name="bw_upload" type="s:decimal" />
+          <s:element minOccurs="1" maxOccurs="1" name="satellite" type="s:boolean" />
+          <s:element minOccurs="1" maxOccurs="1" name="enabled" type="s:boolean" />
+          <s:element minOccurs="1" maxOccurs="1" name="location_id" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="location_name" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="department_id" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="department_name" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="town_id" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="town_name" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="groups" type="tns:ArrayOfKeyValueDataType" />
+          <s:element minOccurs="0" maxOccurs="1" name="location_code" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="department_code" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="town_code" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="institution_id" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="institution_name" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="institution_code" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="institution_type_name" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="location_beneficiary" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="enrollment" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="terceros" type="s:boolean" />
+          <s:element minOccurs="0" maxOccurs="1" name="account_number" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="beam_id" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="mintic_id" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="date_created" type="s:dateTime" />
+          <s:element minOccurs="1" maxOccurs="1" name="date_modified" type="s:dateTime" />
+          <s:element minOccurs="0" maxOccurs="1" name="modified_by" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfKeyValueDataType">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="KeyValueDataType" nillable="true" type="tns:KeyValueDataType" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="KeyValueDataType">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Key" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Value" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="SearchAPByBW">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="DownloadBWOperator" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="DownloadBWValue" type="s:decimal" />
+            <s:element minOccurs="0" maxOccurs="1" name="UploadBWOperator" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="UploadBWValue" type="s:decimal" />
+            <s:element minOccurs="0" maxOccurs="1" name="GeneralOperator" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="MaxRows" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SearchAPByBWResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="SearchAPByBWResult" type="tns:SearchAPByBWResult" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="SearchAPByBWResult">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="ExitCode" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="ErrorMessage" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="APFound" type="tns:ArrayOfSearchAPResultObject" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="AddAP">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="AP" type="tns:ArrayOfSearchAPResultObject" />
+            <s:element minOccurs="1" maxOccurs="1" name="AllowUpdate" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="AddAPResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="AddAPResult" type="tns:AddAPResult" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="AddAPResult">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="LogMessage" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="ExitCode" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="ErrorMessage" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="APsAdded" type="s:int" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="SearchLocationByText">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="TextToSearch" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="MaxRows" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SearchLocationByTextResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="SearchLocationByTextResult" type="tns:SearchLocationByTextResult" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="SearchLocationByTextResult">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="ExitCode" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="ErrorMessage" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="LocationFound" type="tns:ArrayOfSearchAPResultObject" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="GetLocationByBeneficiaryCode">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="BeneficiaryCode" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetLocationByBeneficiaryCodeResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="GetLocationByBeneficiaryCodeResult" type="tns:GetLocationByBeneficiaryCodeResult" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="GetLocationByBeneficiaryCodeResult">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="ExitCode" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="ErrorMessage" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="LocationInformation" type="tns:TableLocationsObject" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="TableLocationsObject">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="locationID" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="location_name" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="beneficiary_code" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="enrollment" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="location_code" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="wlan_network" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="address" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="latitude" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="longitude" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="institution_id" nillable="true" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="town_id" nillable="true" type="s:int" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="DisableAPsByBeneficiaryCode">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="BeneficiaryCode" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="apIDtoExclude" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="DisableAPsByBeneficiaryCodeResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="DisableAPsByBeneficiaryCodeResult" type="tns:DisableAPsByBeneficiaryCodeResult" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="DisableAPsByBeneficiaryCodeResult">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="ExitCode" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="ErrorMessage" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="APsByBeneficiaryCode" type="tns:ArrayOfSearchAPResultObject" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="SearchAllAPsByText">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="TextToSearch" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="MaxRows" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SearchAllAPsByTextResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="SearchAllAPsByTextResult" type="tns:SearchAllAPsByTextResult" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="SearchAllAPsByTextResult">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="ExitCode" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="ErrorMessage" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="APFound" type="tns:ArrayOfSearchAPResultObject" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="GetGroups">
+        <s:complexType />
+      </s:element>
+      <s:element name="GetGroupsResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="GetGroupsResult" type="tns:GetGroupsResult" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="GetGroupsResult">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Groups" type="tns:ArrayOfGroupsObject" />
+          <s:element minOccurs="1" maxOccurs="1" name="ExitCode" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="ErrorMessage" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfGroupsObject">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="GroupsObject" nillable="true" type="tns:GroupsObject" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="GroupsObject">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="groupID" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="group_name" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="schedule" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="group_enabled" type="s:boolean" />
+        </s:sequence>
+      </s:complexType>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="NoActionSoapIn">
+    <wsdl:part name="parameters" element="tns:NoAction" />
+  </wsdl:message>
+  <wsdl:message name="NoActionSoapOut">
+    <wsdl:part name="parameters" element="tns:NoActionResponse" />
+  </wsdl:message>
+  <wsdl:message name="SearchAPByTextSoapIn">
+    <wsdl:part name="parameters" element="tns:SearchAPByText" />
+  </wsdl:message>
+  <wsdl:message name="SearchAPByTextSoapOut">
+    <wsdl:part name="parameters" element="tns:SearchAPByTextResponse" />
+  </wsdl:message>
+  <wsdl:message name="SearchAPByBWSoapIn">
+    <wsdl:part name="parameters" element="tns:SearchAPByBW" />
+  </wsdl:message>
+  <wsdl:message name="SearchAPByBWSoapOut">
+    <wsdl:part name="parameters" element="tns:SearchAPByBWResponse" />
+  </wsdl:message>
+  <wsdl:message name="AddAPSoapIn">
+    <wsdl:part name="parameters" element="tns:AddAP" />
+  </wsdl:message>
+  <wsdl:message name="AddAPSoapOut">
+    <wsdl:part name="parameters" element="tns:AddAPResponse" />
+  </wsdl:message>
+  <wsdl:message name="SearchLocationByTextSoapIn">
+    <wsdl:part name="parameters" element="tns:SearchLocationByText" />
+  </wsdl:message>
+  <wsdl:message name="SearchLocationByTextSoapOut">
+    <wsdl:part name="parameters" element="tns:SearchLocationByTextResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetLocationByBeneficiaryCodeSoapIn">
+    <wsdl:part name="parameters" element="tns:GetLocationByBeneficiaryCode" />
+  </wsdl:message>
+  <wsdl:message name="GetLocationByBeneficiaryCodeSoapOut">
+    <wsdl:part name="parameters" element="tns:GetLocationByBeneficiaryCodeResponse" />
+  </wsdl:message>
+  <wsdl:message name="DisableAPsByBeneficiaryCodeSoapIn">
+    <wsdl:part name="parameters" element="tns:DisableAPsByBeneficiaryCode" />
+  </wsdl:message>
+  <wsdl:message name="DisableAPsByBeneficiaryCodeSoapOut">
+    <wsdl:part name="parameters" element="tns:DisableAPsByBeneficiaryCodeResponse" />
+  </wsdl:message>
+  <wsdl:message name="SearchAllAPsByTextSoapIn">
+    <wsdl:part name="parameters" element="tns:SearchAllAPsByText" />
+  </wsdl:message>
+  <wsdl:message name="SearchAllAPsByTextSoapOut">
+    <wsdl:part name="parameters" element="tns:SearchAllAPsByTextResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetGroupsSoapIn">
+    <wsdl:part name="parameters" element="tns:GetGroups" />
+  </wsdl:message>
+  <wsdl:message name="GetGroupsSoapOut">
+    <wsdl:part name="parameters" element="tns:GetGroupsResponse" />
+  </wsdl:message>
+  <wsdl:portType name="ManageAPSearchingSoap">
+    <wsdl:operation name="NoAction">
+      <wsdl:input message="tns:NoActionSoapIn" />
+      <wsdl:output message="tns:NoActionSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SearchAPByText">
+      <wsdl:input message="tns:SearchAPByTextSoapIn" />
+      <wsdl:output message="tns:SearchAPByTextSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SearchAPByBW">
+      <wsdl:input message="tns:SearchAPByBWSoapIn" />
+      <wsdl:output message="tns:SearchAPByBWSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="AddAP">
+      <wsdl:input message="tns:AddAPSoapIn" />
+      <wsdl:output message="tns:AddAPSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SearchLocationByText">
+      <wsdl:input message="tns:SearchLocationByTextSoapIn" />
+      <wsdl:output message="tns:SearchLocationByTextSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetLocationByBeneficiaryCode">
+      <wsdl:input message="tns:GetLocationByBeneficiaryCodeSoapIn" />
+      <wsdl:output message="tns:GetLocationByBeneficiaryCodeSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="DisableAPsByBeneficiaryCode">
+      <wsdl:input message="tns:DisableAPsByBeneficiaryCodeSoapIn" />
+      <wsdl:output message="tns:DisableAPsByBeneficiaryCodeSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SearchAllAPsByText">
+      <wsdl:input message="tns:SearchAllAPsByTextSoapIn" />
+      <wsdl:output message="tns:SearchAllAPsByTextSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetGroups">
+      <wsdl:input message="tns:GetGroupsSoapIn" />
+      <wsdl:output message="tns:GetGroupsSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="ManageAPSearchingSoap" type="tns:ManageAPSearchingSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="NoAction">
+      <soap:operation soapAction="www.claro.com.co/NoAction" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SearchAPByText">
+      <soap:operation soapAction="www.claro.com.co/SearchAPByText" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SearchAPByBW">
+      <soap:operation soapAction="www.claro.com.co/SearchAPByBW" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddAP">
+      <soap:operation soapAction="www.claro.com.co/AddAP" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SearchLocationByText">
+      <soap:operation soapAction="www.claro.com.co/SearchLocationByText" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetLocationByBeneficiaryCode">
+      <soap:operation soapAction="www.claro.com.co/GetLocationByBeneficiaryCode" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DisableAPsByBeneficiaryCode">
+      <soap:operation soapAction="www.claro.com.co/DisableAPsByBeneficiaryCode" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SearchAllAPsByText">
+      <soap:operation soapAction="www.claro.com.co/SearchAllAPsByText" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetGroups">
+      <soap:operation soapAction="www.claro.com.co/GetGroups" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="ManageAPSearchingSoap12" type="tns:ManageAPSearchingSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="NoAction">
+      <soap12:operation soapAction="www.claro.com.co/NoAction" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SearchAPByText">
+      <soap12:operation soapAction="www.claro.com.co/SearchAPByText" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SearchAPByBW">
+      <soap12:operation soapAction="www.claro.com.co/SearchAPByBW" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddAP">
+      <soap12:operation soapAction="www.claro.com.co/AddAP" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SearchLocationByText">
+      <soap12:operation soapAction="www.claro.com.co/SearchLocationByText" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetLocationByBeneficiaryCode">
+      <soap12:operation soapAction="www.claro.com.co/GetLocationByBeneficiaryCode" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DisableAPsByBeneficiaryCode">
+      <soap12:operation soapAction="www.claro.com.co/DisableAPsByBeneficiaryCode" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SearchAllAPsByText">
+      <soap12:operation soapAction="www.claro.com.co/SearchAllAPsByText" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetGroups">
+      <soap12:operation soapAction="www.claro.com.co/GetGroups" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="ManageAPSearching">
+    <wsdl:port name="ManageAPSearchingSoap" binding="tns:ManageAPSearchingSoap">
+      <soap:address location="https://localhost/SpeedTest.SearchAP/ManageAPSearching.asmx" />
+    </wsdl:port>
+    <wsdl:port name="ManageAPSearchingSoap12" binding="tns:ManageAPSearchingSoap12">
+      <soap12:address location="https://localhost/SpeedTest.SearchAP/ManageAPSearching.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

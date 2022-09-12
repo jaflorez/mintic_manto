@@ -30,7 +30,6 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.security.cert.X509Certificate;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -41,6 +40,13 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
+import org.apache.oltu.oauth2.client.OAuthClient;
+import org.apache.oltu.oauth2.client.URLConnectionClient;
+import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
+import org.apache.oltu.oauth2.client.response.OAuthJSONAccessTokenResponse;
+import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
+import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
+import org.apache.oltu.oauth2.common.message.types.GrantType;
 
 
 public class ConsultaRestUtil {
@@ -63,61 +69,7 @@ public class ConsultaRestUtil {
 		}
     }
 
-    public String[]  generar_tokens(String ruta,String callPy){
-        try {
-            String[] tokens;
-            while(true){
-                tokens = read_tokens_file(ruta);
-                String[] fech = tokens[3].split("T");
-                String dateTime = fech[0] + ' ' + fech[1];
-                Timestamp timestamp1 = Timestamp.valueOf(dateTime);
-                java.util.Date date = new java.util.Date();
-                Timestamp timestamp2 = new Timestamp(date.getTime());                
-                long minutes = ((timestamp2.getTime() - timestamp1.getTime()) / 1000)  / 60;
-                if(minutes > 50){
-                    Process p = Runtime.getRuntime().exec(callPy);
-                    p.waitFor();
-                    Thread.sleep(1000);
-                }
-                else{
-                    break;
-                }
-            }
-            return tokens;
-        } catch (IOException ex) {
-            Logger.getLogger(ConsultaRestUtil.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-        return null;
-        
-    }
 	
-    private String[]  read_tokens_file(String ruta){
-        BufferedReader br = null;
-        String[] tokens = null;
-        try {
-            String file_token = ruta;
-            br = new BufferedReader(new FileReader(file_token));
-            String st;
-            while ((st = br.readLine()) != null){
-                tokens = st.split(",");
-            }
-            return tokens;
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(ConsultaRestUtil.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(ConsultaRestUtil.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            try {
-                br.close();
-            } catch (IOException ex) {
-                Logger.getLogger(ConsultaRestUtil.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-        return tokens;
-    }
     
     public Radio consultar_rd_cd(String url_p,String mac,String token) {
     	Radio radio = null;
@@ -552,7 +504,6 @@ public class ConsultaRestUtil {
     }
     
 	public AccessPoint consultar_ap(String url_p,String mac,String token,String tipo) {
-		
 		AccessPoint accessPoint = null;
 		String url_api = url_p.replace("[MAC]", mac);
     	URL url;
@@ -575,6 +526,7 @@ public class ConsultaRestUtil {
             };
             HttpsURLConnection.setDefaultHostnameVerifier(hv);
             HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+            
             url = new URL(url_api);
             HttpsURLConnection http = (HttpsURLConnection)url.openConnection();
             http.setRequestProperty("Accept", "application/json");
@@ -625,5 +577,57 @@ public class ConsultaRestUtil {
 		}
 		return accessPoint;
 	}
+	public String get_token_from_server(String tokenUrl, String clientId, String clientSecret) {
+        TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager(){
+            public X509Certificate[] getAcceptedIssuers(){return null;}
+            public void checkClientTrusted(X509Certificate[] certs, String authType){}
+            public void checkServerTrusted(X509Certificate[] certs, String authType){}
+        }};
+        SSLContext sc;
+		try {
+			sc = SSLContext.getInstance("SSL");
+			sc.init(null, trustAllCerts, new SecureRandom());
+			HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+	        HostnameVerifier hv = new HostnameVerifier() {
+	            public boolean verify(String urlHostName, SSLSession session) {
+	                if (!urlHostName.equalsIgnoreCase(session.getPeerHost())) {
+	                    System.out.println("Warning: URL host '" + urlHostName + "' is different to SSLSession host '" + session.getPeerHost() + "'.");
+	                }
+	                return true;
+	            }
+	        };
+	        HttpsURLConnection.setDefaultHostnameVerifier(hv);
+	        HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+		} catch (NoSuchAlgorithmException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (KeyManagementException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		OAuthClientRequest request = null;
+	    OAuthClient oAuthClient = null;
+	    OAuthJSONAccessTokenResponse tokenResponse = null;
+	    try {
+	      request =
+	          OAuthClientRequest.tokenLocation(tokenUrl)
+	              .setClientId(clientId)
+	              .setClientSecret(clientSecret)
+	              .setGrantType(GrantType.CLIENT_CREDENTIALS)
+	              .setScope("all")
+	              .buildBodyMessage();
+	      oAuthClient = new OAuthClient(new URLConnectionClient());
+	      tokenResponse = oAuthClient.accessToken(request, OAuthJSONAccessTokenResponse.class);
+	    } catch (OAuthSystemException e) {
+	      // TODO Auto-generated catch block
+	      e.printStackTrace();
+	    } catch (OAuthProblemException e) {
+	      // TODO Auto-generated catch block
+	      e.printStackTrace();
+	    }
+	    if (tokenResponse == null) return null;
+	    return tokenResponse.getAccessToken();
+	}
+	
 
 }

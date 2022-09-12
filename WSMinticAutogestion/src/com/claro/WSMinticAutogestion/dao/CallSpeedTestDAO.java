@@ -21,6 +21,24 @@ public class CallSpeedTestDAO {
 		super();
 		this.connection = connection;
 	}
+	public void Save(CallSpeedTestVO callSpeedTestVO) {
+		PreparedStatement preparedStatement = null;
+		try {
+			String sql = "INSERT INTO speed_test_call(usuario,ap_id,workflow_process_id,fecha,estado,fecha_solicitud) VALUES(?,?,?,sysdate(),?,?)";
+			preparedStatement = this.connection.prepareStatement(sql);
+			preparedStatement.setString(1, callSpeedTestVO.getUsuario());
+			preparedStatement.setString(2, callSpeedTestVO.getAp_id());
+			preparedStatement.setString(3, callSpeedTestVO.getWorkflow_process_id());
+			preparedStatement.setString(4, callSpeedTestVO.getEstado());
+			java.sql.Timestamp sqlDate = new java.sql.Timestamp(callSpeedTestVO.getFecha_solicitud().getTime());
+			preparedStatement.setTimestamp(5, sqlDate);
+			preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			System.out.println("CallSpeedTestDAO Find By Id err: "+e.toString());
+		}
+		
+		
+	}
 	public CallSpeedTestVO FindByUserApid(String user_id,String ap_id) {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet;

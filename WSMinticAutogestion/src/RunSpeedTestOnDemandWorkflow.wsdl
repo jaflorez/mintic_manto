@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="www.claro.com.co" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" targetNamespace="www.claro.com.co" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="www.claro.com.co">
+      <s:element name="Execute">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="APListIDs" type="tns:ArrayOfInt" />
+            <s:element minOccurs="0" maxOccurs="1" name="UserEmail" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfInt">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="int" type="s:int" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="ExecuteResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ExecuteResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ExecuteAndReturnPID">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="APListIDs" type="tns:ArrayOfInt" />
+            <s:element minOccurs="0" maxOccurs="1" name="UserEmail" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ExecuteAndReturnPIDResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="ExecuteAndReturnPIDResult" type="tns:TrackingIDAndProcessID" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="TrackingIDAndProcessID">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="WorkflowTrackingID" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="ProcessID" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="CheckTimeoutsAndEscalations">
+        <s:complexType />
+      </s:element>
+      <s:element name="CheckTimeoutsAndEscalationsResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="CheckTimeoutsAndEscalationsResult" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="TrackStatus">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="workflowTrackingId" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="TrackStatusResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="TrackStatusResult" type="tns:WorkStatus" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="WorkStatus">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="WorkflowTrackingID" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="StatusItems" type="tns:ArrayOfWorkStatusItem" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfWorkStatusItem">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="WorkStatusItem" nillable="true" type="tns:WorkStatusItem" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="WorkStatusItem">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="WorkflowTaskID" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="ComponentName" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="ComponentDescription" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="ComponentID" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="EventType" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Description" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="EscalationSequenceNumber" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="FinishPath" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="When" type="s:dateTime" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="GetCurrentWorkflowTasks">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="workflowTrackingId" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetCurrentWorkflowTasksResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetCurrentWorkflowTasksResult" type="tns:ArrayOfWorkflowTaskResult" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfWorkflowTaskResult">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="WorkflowTaskResult" nillable="true" type="tns:WorkflowTaskResult" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="WorkflowTaskResult">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="WorkflowTaskID" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="WebServiceName" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="ComponentClassName" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="ComponentName" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="GetCurrentWorkflowTaskIDs">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="workflowTrackingId" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetCurrentWorkflowTaskIDsResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetCurrentWorkflowTaskIDsResult" type="tns:ArrayOfString" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfString">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="string" nillable="true" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="CheckAutoStart">
+        <s:complexType />
+      </s:element>
+      <s:element name="CheckAutoStartResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="CheckAutoStartResult" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="ExecuteSoapIn">
+    <wsdl:part name="parameters" element="tns:Execute" />
+  </wsdl:message>
+  <wsdl:message name="ExecuteSoapOut">
+    <wsdl:part name="parameters" element="tns:ExecuteResponse" />
+  </wsdl:message>
+  <wsdl:message name="ExecuteAndReturnPIDSoapIn">
+    <wsdl:part name="parameters" element="tns:ExecuteAndReturnPID" />
+  </wsdl:message>
+  <wsdl:message name="ExecuteAndReturnPIDSoapOut">
+    <wsdl:part name="parameters" element="tns:ExecuteAndReturnPIDResponse" />
+  </wsdl:message>
+  <wsdl:message name="CheckTimeoutsAndEscalationsSoapIn">
+    <wsdl:part name="parameters" element="tns:CheckTimeoutsAndEscalations" />
+  </wsdl:message>
+  <wsdl:message name="CheckTimeoutsAndEscalationsSoapOut">
+    <wsdl:part name="parameters" element="tns:CheckTimeoutsAndEscalationsResponse" />
+  </wsdl:message>
+  <wsdl:message name="TrackStatusSoapIn">
+    <wsdl:part name="parameters" element="tns:TrackStatus" />
+  </wsdl:message>
+  <wsdl:message name="TrackStatusSoapOut">
+    <wsdl:part name="parameters" element="tns:TrackStatusResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetCurrentWorkflowTasksSoapIn">
+    <wsdl:part name="parameters" element="tns:GetCurrentWorkflowTasks" />
+  </wsdl:message>
+  <wsdl:message name="GetCurrentWorkflowTasksSoapOut">
+    <wsdl:part name="parameters" element="tns:GetCurrentWorkflowTasksResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetCurrentWorkflowTaskIDsSoapIn">
+    <wsdl:part name="parameters" element="tns:GetCurrentWorkflowTaskIDs" />
+  </wsdl:message>
+  <wsdl:message name="GetCurrentWorkflowTaskIDsSoapOut">
+    <wsdl:part name="parameters" element="tns:GetCurrentWorkflowTaskIDsResponse" />
+  </wsdl:message>
+  <wsdl:message name="CheckAutoStartSoapIn">
+    <wsdl:part name="parameters" element="tns:CheckAutoStart" />
+  </wsdl:message>
+  <wsdl:message name="CheckAutoStartSoapOut">
+    <wsdl:part name="parameters" element="tns:CheckAutoStartResponse" />
+  </wsdl:message>
+  <wsdl:portType name="RunSpeedTestOnDemandWorkflowSoap">
+    <wsdl:operation name="Execute">
+      <wsdl:input message="tns:ExecuteSoapIn" />
+      <wsdl:output message="tns:ExecuteSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ExecuteAndReturnPID">
+      <wsdl:input message="tns:ExecuteAndReturnPIDSoapIn" />
+      <wsdl:output message="tns:ExecuteAndReturnPIDSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="CheckTimeoutsAndEscalations">
+      <wsdl:input message="tns:CheckTimeoutsAndEscalationsSoapIn" />
+      <wsdl:output message="tns:CheckTimeoutsAndEscalationsSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="TrackStatus">
+      <wsdl:input message="tns:TrackStatusSoapIn" />
+      <wsdl:output message="tns:TrackStatusSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetCurrentWorkflowTasks">
+      <wsdl:input message="tns:GetCurrentWorkflowTasksSoapIn" />
+      <wsdl:output message="tns:GetCurrentWorkflowTasksSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetCurrentWorkflowTaskIDs">
+      <wsdl:input message="tns:GetCurrentWorkflowTaskIDsSoapIn" />
+      <wsdl:output message="tns:GetCurrentWorkflowTaskIDsSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="CheckAutoStart">
+      <wsdl:input message="tns:CheckAutoStartSoapIn" />
+      <wsdl:output message="tns:CheckAutoStartSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="RunSpeedTestOnDemandWorkflowSoap" type="tns:RunSpeedTestOnDemandWorkflowSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="Execute">
+      <soap:operation soapAction="www.claro.com.co/Execute" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ExecuteAndReturnPID">
+      <soap:operation soapAction="www.claro.com.co/ExecuteAndReturnPID" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CheckTimeoutsAndEscalations">
+      <soap:operation soapAction="www.claro.com.co/CheckTimeoutsAndEscalations" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="TrackStatus">
+      <soap:operation soapAction="www.claro.com.co/TrackStatus" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetCurrentWorkflowTasks">
+      <soap:operation soapAction="www.claro.com.co/GetCurrentWorkflowTasks" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetCurrentWorkflowTaskIDs">
+      <soap:operation soapAction="www.claro.com.co/GetCurrentWorkflowTaskIDs" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CheckAutoStart">
+      <soap:operation soapAction="www.claro.com.co/CheckAutoStart" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="RunSpeedTestOnDemandWorkflowSoap12" type="tns:RunSpeedTestOnDemandWorkflowSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="Execute">
+      <soap12:operation soapAction="www.claro.com.co/Execute" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ExecuteAndReturnPID">
+      <soap12:operation soapAction="www.claro.com.co/ExecuteAndReturnPID" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CheckTimeoutsAndEscalations">
+      <soap12:operation soapAction="www.claro.com.co/CheckTimeoutsAndEscalations" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="TrackStatus">
+      <soap12:operation soapAction="www.claro.com.co/TrackStatus" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetCurrentWorkflowTasks">
+      <soap12:operation soapAction="www.claro.com.co/GetCurrentWorkflowTasks" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetCurrentWorkflowTaskIDs">
+      <soap12:operation soapAction="www.claro.com.co/GetCurrentWorkflowTaskIDs" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CheckAutoStart">
+      <soap12:operation soapAction="www.claro.com.co/CheckAutoStart" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="RunSpeedTestOnDemandWorkflow">
+    <wsdl:port name="RunSpeedTestOnDemandWorkflowSoap" binding="tns:RunSpeedTestOnDemandWorkflowSoap">
+      <soap:address location="https://gestionate.triara.co/SpeedTest.OnDemandWorkflow/RunSpeedTestOnDemandWorkflow.asmx" />
+    </wsdl:port>
+    <wsdl:port name="RunSpeedTestOnDemandWorkflowSoap12" binding="tns:RunSpeedTestOnDemandWorkflowSoap12">
+      <soap12:address location="https://gestionate.triara.co/SpeedTest.OnDemandWorkflow/RunSpeedTestOnDemandWorkflow.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

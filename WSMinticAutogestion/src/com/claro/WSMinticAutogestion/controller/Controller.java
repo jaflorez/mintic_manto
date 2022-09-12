@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
@@ -23,6 +24,7 @@ import com.claro.WSMinticAutogestion.json.SpeedTestResult;
 import com.claro.WSMinticAutogestion.json.Switch_bts;
 import com.claro.WSMinticAutogestion.util.ConsultaRestUtil;
 import com.claro.WSMinticAutogestion.util.ConsultaSoapUtil;
+import com.claro.WSMinticAutogestion.util.TokenUtil;
 import com.claro.WSMinticAutogestion.vo.CallSpeedTestVO;
 import com.claro.WSMinticAutogestion.vo.CentroDigitalVO;
 import com.claro.WSMinticAutogestion.vo.EquipoVO;
@@ -61,20 +63,29 @@ public class Controller {
     public CentroDigital consultarCentroDigital(String idConsulta) {
     	CentroDigital  centroDigital = null;
     	try {
-        	ConsultaSoapUtil consultaSoapUtil = new ConsultaSoapUtil();
-        	consultaSoapUtil.ActualizarAPID(this.properties.getProperty("SCRIPT_GET_AP_ID"), idConsulta);
+        	System.out.println(idConsulta);
     		MinticDAO minticDAO = new MinticDAO();
         	Connection connection = minticDAO.getConnection(this.properties.getProperty("DB_STR_CONNECTION"),this.properties.getProperty("DB_USER"),this.properties.getProperty("DB_PWD"));
         	centroDigital = new CentroDigital();
+       		if(connection == null) {
+       			System.out.println("Erro en la coneccion");
+       			return centroDigital;
+            }
+        	
         	CentroDigitalDAO centroDigitalDAO = new CentroDigitalDAO(connection);
         	CentroDigitalVO centroDigitalVO = null;
        		centroDigitalVO = centroDigitalDAO.findById(idConsulta);
-        	if(connection != null) {
+       		TokenUtil tokenUtil = new TokenUtil();
+       		String[] tokens = tokenUtil.consultar_tokens(properties,connection);
+       		if(connection != null) {
         		connection.close();
             }
         	if(centroDigitalVO == null) {
         		return centroDigital;
         	}
+        	ConsultaSoapUtil consultaSoapUtil = new ConsultaSoapUtil();
+        	String  ap_id =  Integer.toString(consultaSoapUtil.ConsultarApId(this.properties.getProperty("URL_SPD_TST_FIND_ID"),idConsulta));
+        	centroDigitalVO.setAp_id(ap_id);
         	centroDigital.setId_beneficiario(centroDigitalVO.getId_beneficiario());
         	centroDigital.setId_mintic(centroDigitalVO.getId_mintic());
         	centroDigital.setMunicipio(centroDigitalVO.getMunicipio());
@@ -83,9 +94,10 @@ public class Controller {
         	centroDigital.setDepartamento(centroDigitalVO.getDepartamento());
         	centroDigital.setResponsables(centroDigitalVO.getResponsables());
         	centroDigital.setAp_id(centroDigitalVO.getAp_id());
+        	
+        	System.out.println("Out"+tokens[0]);
         	List<AccessPoint>  listaAP = new ArrayList<>();
         	ConsultaRestUtil consultaRestUtil = new ConsultaRestUtil();
-        	String[] tokens  =  consultaRestUtil.generar_tokens(this.properties.getProperty("PATH_TOKENS"),this.properties.getProperty("SCRIPT_TOKENS"));
         	Radio rd_cd = null;
         	Radio radio_bts = null;
         	for(EquipoVO eq:centroDigitalVO.getEquipos()) {
@@ -149,7 +161,12 @@ public class Controller {
         	CallSpeedTestVO callSpeedTestVo = callSpeedTestDAO.FindByUserApid(user_id, ap_id);
         	if(callSpeedTestVo == null) {/*No existe una solicitud pendiente*/
         		ConsultaSoapUtil consultaSoapUtil = new ConsultaSoapUtil();
-        		consultaSoapUtil.llamar_speed_test(this.properties.getProperty("SCRIPT_SPEED_TEST"), user_id, ap_id, fecha_solicitud);
+        		callSpeedTestVo = consultaSoapUtil.llamar_speed_test(this.properties.getProperty("URL_SPD_TST_RUN"),this.properties.getProperty("MAIL_SPEED_TEST"), ap_id);
+        		callSpeedTestVo.setUsuario(user_id);
+        		Date date = new Date();
+        		callSpeedTestVo.setFecha(date);
+        		callSpeedTestVo.setFecha_solicitud(df.parse(fecha_solicitud));
+        		callSpeedTestDAO.Save(callSpeedTestVo);
         		speedTestResult =  new SpeedTestResult(user_id,ap_id,"corriendo",fecha_solicitud); 
         	}
         	else {
@@ -176,7 +193,7 @@ public class Controller {
         	return speedTestResult;
 			
 		} catch (Exception e) {
-			System.err.println("Errro en el proceso" );
+			System.err.println("Error en el proceso" );
 			System.err.println(e);
 			// TODO: handle exception
 		}

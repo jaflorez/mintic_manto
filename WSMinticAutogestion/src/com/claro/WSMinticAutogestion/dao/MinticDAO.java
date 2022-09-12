@@ -2,6 +2,8 @@ package com.claro.WSMinticAutogestion.dao;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
@@ -10,10 +12,6 @@ import java.sql.SQLException;
  *
  */
 public class MinticDAO {
-	/**
-	 * Metodo de trae la conexion a Base de datos, segun datos de conexion
-	 * @return
-	 */
 	public  Connection getConnection(String jdbcURL,String username,String password) {
 		try {
 			Connection connection;
