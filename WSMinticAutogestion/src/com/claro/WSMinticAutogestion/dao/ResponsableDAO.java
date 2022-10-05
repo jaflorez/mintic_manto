@@ -45,7 +45,6 @@ public class ResponsableDAO {
 	public void  eliminarResponsableById(String id_responsable){
 		PreparedStatement preparedStatement = null;
 		try {
-			
 			String sql = "delete from responsable where id_responsable  = ? ";
 			preparedStatement = this.connection.prepareStatement(sql);
 			preparedStatement.setString(1, id_responsable);
