@@ -6,6 +6,7 @@ public class AccessPoint {
 	private String mac;
 	private String status;
 	private String site;
+	private String ip_address;
 	public String getTipo() {
 		return tipo;
 	}
@@ -35,6 +36,12 @@ public class AccessPoint {
 	}
 	public void setSite(String site) {
 		this.site = site;
+	}
+	public String getIp_address() {
+		return ip_address;
+	}
+	public void setIp_address(String ip_address) {
+		this.ip_address = ip_address;
 	}
 	
 	

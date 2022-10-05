@@ -4,10 +4,12 @@ public class EquipoVO {
 	private String id_beneficiario;
 	private String mac;
 	private String tipo;
-	public EquipoVO(String id_beneficiario,String mac,String tipo) {
+	private String ip_address;
+	public EquipoVO(String id_beneficiario,String mac,String tipo,String ip_address) {
 		this.id_beneficiario = id_beneficiario;
 		this.mac = mac;
 		this.tipo = tipo;
+		this.ip_address = ip_address;
 	}
 	public String getId_beneficiario() {
 		return id_beneficiario;
@@ -27,5 +29,12 @@ public class EquipoVO {
 	public void setTipo(String tipo) {
 		this.tipo = tipo;
 	}
+	public String getIp_address() {
+		return ip_address;
+	}
+	public void setIp_address(String ip_address) {
+		this.ip_address = ip_address;
+	}
+	
 	
 }

@@ -1,1 +1,0 @@
-@py.exe C:\Aplicativos\Estado_Rad_CNMaestro\main.py %*

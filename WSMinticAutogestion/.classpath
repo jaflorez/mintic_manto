@@ -2,7 +2,7 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="test"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.8.0_291">
 		<attributes>
 			<attribute name="module" value="true"/>
 			<attribute name="owner.project.facets" value="java"/>
@@ -31,5 +31,9 @@
 	<classpathentry kind="lib" path="D:/CLARO/DEV_ECLIPSE/library/base64-2.3.7.jar"/>
 	<classpathentry kind="lib" path="D:/CLARO/DEV_ECLIPSE/library/sqljdbc_11.2.0.0_enu/sqljdbc_11.2/enu/mssql-jdbc-11.2.0.jre8.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/mssql-jdbc-11.2.0.jre8.jar"/>
+	<classpathentry kind="lib" path="D:/CLARO/DEV_ECLIPSE/library/javax.mail.jar/javax.mail.jar"/>
+	<classpathentry kind="lib" path="D:/CLARO/DEV_ECLIPSE/library/org.apache.oltu.oauth2.client-1.0.2.jar"/>
+	<classpathentry kind="lib" path="D:/CLARO/DEV_ECLIPSE/library/json-20220320.jar"/>
+	<classpathentry kind="lib" path="D:/CLARO/DEV_ECLIPSE/library/json-simple-1.1.1.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

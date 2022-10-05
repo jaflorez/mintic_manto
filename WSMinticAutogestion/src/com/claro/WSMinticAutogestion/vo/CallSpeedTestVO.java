@@ -10,6 +10,17 @@ public class CallSpeedTestVO {
 	private Date fecha;
 	private String 	estado;
 	private Date fecha_solicitud;
+	public CallSpeedTestVO(String ap_id, String workflow_process_id, String estado) {
+		super();
+		this.speed_test_call_id = 0;
+		this.usuario = "";
+		this.ap_id = ap_id;
+		this.workflow_process_id = workflow_process_id;
+		this.fecha = null;
+		this.estado = estado;
+		this.fecha_solicitud = null;
+	}
+	
 	public CallSpeedTestVO(long speed_test_call_id, String usuario, String ap_id, String workflow_process_id,
 			Date fecha, String estado,Date fecha_solicitud) {
 		super();
