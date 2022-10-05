@@ -4,6 +4,6 @@
 	</head>
 	<body>
 		<h1>Hi!!!  WELCOME!!!</h1>
-		<div>Mintic  - Autogestión</div>
+		<div>Mintic  - Autogestión V B 0.5</div>
 	</body>
 </html>

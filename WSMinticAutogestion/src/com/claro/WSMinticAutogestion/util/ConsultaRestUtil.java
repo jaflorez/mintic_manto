@@ -195,12 +195,10 @@ public class ConsultaRestUtil {
             JSONObject jsCld = (JSONObject) data_js_arr.get(0);
             switch_bts = new Switch_bts();
             switch_bts.setMac(mac);
-            switch_bts.setIp(jsCld.get("ip").toString());
+            switch_bts.setIp_address(jsCld.get("ip").toString());
             switch_bts.setStatus(jsCld.get("status").toString());
             switch_bts.setTower(jsCld.get("tower").toString());
             switch_bts.setName_sw(jsCld.get("name").toString());
-            switch_bts.setLan_speed_status(jsCld.get("lan_speed_status").toString());
-            switch_bts.setLan_mode_status(jsCld.get("lan_mode_status").toString());
             http.disconnect();			
             
         } catch (NoSuchAlgorithmException e) {
@@ -313,6 +311,8 @@ public class ConsultaRestUtil {
     public List<Interfaces_rt> consultar_router_interfaces(String urlApi,String ip,String usr,String psw) {
         String usernameColonPassword = usr+ ":" + psw;
         String urlApiIPN = urlApi.replace("[IP]", ip);
+        System.out.println(urlApiIPN);
+        
         BufferedReader httpResponseReader = null;
         List<Interfaces_rt>  listaIR = new ArrayList<>();        
         try {

@@ -36,7 +36,6 @@ public class CentroDigitalDAO {
 				if (resultSet.next()) {
 					centroDigitalVO = new CentroDigitalVO(resultSet.getString(1),resultSet.getString(2),resultSet.getString(3),resultSet.getString(4),resultSet.getString(5),resultSet.getString(6),resultSet.getString(7),resultSet.getString(8),resultSet.getInt(9),resultSet.getString(10));
 					centroDigitalVO.setEquipos(this.listEquipoByIdBeneficiario(centroDigitalVO.getId_beneficiario()));
-					centroDigitalVO.setResponsables(this.listResponsablesByIdBeneficiario(centroDigitalVO.getId_beneficiario()));
 				} else {
 					centroDigitalVO = new CentroDigitalVO();
 				}
@@ -60,12 +59,12 @@ public class CentroDigitalDAO {
 		List<EquipoVO> listaEquipo = new ArrayList<>(); 
 		try {
 			if(this.connection.isValid(10)) {
-				preparedStatement = this.connection.prepareStatement("select id_beneficiario,mac,tipo from equipo where id_beneficiario = ?");
+				preparedStatement = this.connection.prepareStatement("select id_beneficiario,mac,tipo,ip from equipo where id_beneficiario = ?");
 				preparedStatement.setString(1, id_beneficiario);
 				resultSet = preparedStatement.executeQuery();
 				EquipoVO equipoVO = null;
 				while(resultSet.next()) {
-					equipoVO = new EquipoVO(resultSet.getString(1),resultSet.getString(2),resultSet.getString(3));
+					equipoVO = new EquipoVO(resultSet.getString(1),resultSet.getString(2),resultSet.getString(3),resultSet.getString(4));
 					listaEquipo.add(equipoVO);
 				}
 				if(!resultSet.isClosed()) {
@@ -82,33 +81,5 @@ public class CentroDigitalDAO {
 		return listaEquipo;
 	}
 
-	public List<ResponsableVO> listResponsablesByIdBeneficiario(String id_beneficiario){
-		List<ResponsableVO> listaResponsable = new ArrayList<>(); 
-		PreparedStatement preparedStatement = null;
-		ResultSet resultSet;
-		try {
-			if(this.connection.isValid(10)) {
-				preparedStatement = this.connection.prepareStatement("select id_responsable,id_beneficiario,name_resp,phone,email from responsable where id_beneficiario = ?");
-				preparedStatement.setString(1, id_beneficiario);
-				resultSet = preparedStatement.executeQuery();
-				ResponsableVO responsableVO = null;
-				while(resultSet.next()) {
-					responsableVO = new ResponsableVO(resultSet.getInt(1),resultSet.getString(2),resultSet.getString(3),resultSet.getString(4),resultSet.getString(5));
-					listaResponsable.add(responsableVO);
-				}
-				if(!resultSet.isClosed()) {
-					resultSet.close();
-				}
-				if(!preparedStatement.isClosed()) {
-					preparedStatement.close();
-				}			
-			}
-		} catch (Exception e) {
-			System.out.println("CentroDigitalDAO listResponsablesByIdBeneficiario"+e.toString());
-			
-			// TODO: handle exception
-		}
-		return listaResponsable;
-	}
 
 }

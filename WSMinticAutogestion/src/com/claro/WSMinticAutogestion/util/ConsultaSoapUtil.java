@@ -23,7 +23,6 @@ public class ConsultaSoapUtil {
 	public int ConsultarApId(String url_speed_test, String findId) {
 		int response= 0;
 		try {
-			System.out.println(url_speed_test + ":" + findId);
 			ManageAPSearchingSoapProxy prx = new ManageAPSearchingSoapProxy(url_speed_test);
 			SearchAPByTextResult apByTextResult;
 			apByTextResult = prx.searchAPByText(findId, 50);
@@ -36,17 +35,18 @@ public class ConsultaSoapUtil {
 	}
 	public CallSpeedTestVO llamar_speed_test(String url_speed_test,String mail_speed_test,String ap_id) {
 		CallSpeedTestVO callSpeedTestVo = null;
-		RunSpeedTestOnDemandWorkflowSoapProxy workflowSoapProxy = new RunSpeedTestOnDemandWorkflowSoapProxy(url_speed_test);
+		//RunSpeedTestOnDemandWorkflowSoapProxy workflowSoapProxy = new RunSpeedTestOnDemandWorkflowSoapProxy(url_speed_test);
 		int apid = Integer.parseInt(ap_id);
 		int APListIDs[] = {apid};
-		TrackingIDAndProcessID processID;
-		try {
-			processID = workflowSoapProxy.executeAndReturnPID(APListIDs, mail_speed_test);
-			callSpeedTestVo = new CallSpeedTestVO(ap_id,processID.getProcessID(),"registro");
-		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		callSpeedTestVo = new CallSpeedTestVO(ap_id,"TMP01","registro");
+	//	TrackingIDAndProcessID processID;
+//		try {
+//			processID = workflowSoapProxy.executeAndReturnPID(APListIDs, mail_speed_test);
+//			callSpeedTestVo = new CallSpeedTestVO(ap_id,processID.getProcessID(),"registro");
+//		} catch (RemoteException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		return callSpeedTestVo;
 	}
 	

@@ -43,5 +43,10 @@ public class Utilidades {
       connection = DriverManager.getConnection(jdbcURL, username, password);
       return connection;
    }
+   public static String clean_string(String cadena){
+       String result = cadena.trim();
+       return "";
+   
+   }
     
 }

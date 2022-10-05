@@ -10,6 +10,7 @@ public class Radio {
     private String ap_mac;
     private String tower;
     private String name;
+    private String ip_address;
 	public String getStatus() {
 		return status;
 	}
@@ -64,7 +65,11 @@ public class Radio {
 	public void setName(String name) {
 		this.name = name;
 	}
-
-    
+	public String getIp_address() {
+		return ip_address;
+	}
+	public void setIp_address(String ip_address) {
+		this.ip_address = ip_address;
+	}
     
 }

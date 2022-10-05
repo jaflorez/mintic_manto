@@ -39,6 +39,20 @@ public class CallSpeedTestDAO {
 		
 		
 	}
+	public void cerrarSpeedTestByUserApid(String user_id,String ap_id) {
+		PreparedStatement preparedStatement = null;
+		try {
+			String sql = "update speed_test_call set estado = ? where usuario=? and ap_id = ?";
+			preparedStatement = this.connection.prepareStatement(sql);
+			preparedStatement.setString(2, user_id);
+			preparedStatement.setString(3, ap_id);
+			preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			System.out.println("CallSpeedTestDAO Find By Id err: "+e.toString());
+		}
+		
+		
+	}
 	public CallSpeedTestVO FindByUserApid(String user_id,String ap_id) {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet;
@@ -71,7 +85,7 @@ public class CallSpeedTestDAO {
 	public void UpdateCallSpeedTestVO(String user_id,String ap_id,String estado) {
 		PreparedStatement preparedStatement = null;
 		try {
-			String sql = "update speed_test_call set estado = ? where usuario=? and ap_id = ?";
+			String sql = "update speed_test_call set estado = ? where usuario=? and ap_id = ? and ";
 			preparedStatement = this.connection.prepareStatement(sql);
 			preparedStatement.setString(1, estado);
 			preparedStatement.setString(2, user_id);

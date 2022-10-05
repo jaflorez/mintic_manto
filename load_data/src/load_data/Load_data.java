@@ -4,9 +4,7 @@
  * and open the template in the editor.
  */
 package load_data;
-
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import java.io.File;
@@ -73,19 +71,16 @@ public class Load_data {
         try {
             ruta_carga = prop.getProperty("PATH_FILES");
             Load_data load_data = new Load_data();
-            Connection con = Utilidades.getConection(prop.getProperty("DB_STR_CONNECTION"), prop.getProperty("DB_USER"), prop.getProperty("DB_PWD"));
-            load_data.load_generador_scripts(ruta_carga + "//Generador de Script Mintic.xlsm", con);
-            load_data.load_consolidado(ruta_carga + "//CONSOLIDADO.xlsx", con);
-            String[] tokens = load_data.generar_tokens(prop);
-            load_data.actualizar_ap(tokens[1], prop.getProperty("URL_AP1_LST"), 1, con);
-            load_data.actualizar_ap(tokens[2], prop.getProperty("URL_AP2_LST"), 2, con);
-            load_data.actualizar_aps(con);
-            /*Se ajusta temporalmente mientra se resuelve la conexion al servidor*/
-            load_data.actualizar_radios_switch_cnmaestro(prop.getProperty("PATH_FILES") + "//cnMaestro-device.xlsx", con);
-            Connection con_resp = Utilidades.getConection(prop.getProperty("DB_RESP_STR_CONNECTION"), prop.getProperty("DB_RESP_USER"), prop.getProperty("DB_RESP_PWD"));
-            load_data.actualizar_responsables(con_resp, con);
-            con_resp.close();
-            con.close();
+            try (Connection con = Utilidades.getConection(prop.getProperty("DB_STR_CONNECTION"), prop.getProperty("DB_USER"), prop.getProperty("DB_PWD"))) {
+                load_data.load_generador_scripts(ruta_carga + "//Generador de Script Mintic.xlsm", con);
+                load_data.load_consolidado(ruta_carga + "//CONSOLIDADO.xlsx", con);
+                load_data.actualizar_radios_switch_cnmaestro(ruta_carga + "//cnMaestro-device.xlsx", con);
+                load_data.actualizar_responsable(ruta_carga + "//responsable.xlsx", con);
+//                String[] tokens = load_data.generar_tokens(prop);
+//                load_data.actualizar_ap(tokens[1], prop.getProperty("URL_AP1_LST"), 1, con);
+//                load_data.actualizar_ap(tokens[2], prop.getProperty("URL_AP2_LST"), 2, con);
+//                load_data.actualizar_aps(con);
+            }
             System.out.println("---- Fin --- ");
         } catch (SQLException ex) {
             Logger.getLogger(Load_data.class.getName()).log(Level.SEVERE, null, ex);
@@ -121,45 +116,53 @@ public class Load_data {
                 rowIterator.next();
                 rowIterator.next();
                 while (rowIterator.hasNext()) {
+                    counter++;
                     Row row = rowIterator.next();
                     try {
                         for (int contador_fld = 1; contador_fld <= 103; contador_fld++) {
                             if (row.getCell(contador_fld) != null) {
-                                switch (row.getCell(contador_fld).getCellTypeEnum()) {
-                                    case BLANK:
-                                        statement.setNull(contador_fld, java.sql.Types.NULL);
-                                        break;
-                                    case STRING:
-                                        statement.setString(contador_fld, row.getCell(contador_fld).getStringCellValue());
-                                        break;
-                                    case NUMERIC:
-                                        NumberFormat nf = NumberFormat.getNumberInstance();
-                                        nf.setMaximumFractionDigits(0);
-                                        String rounded = nf.format(row.getCell(contador_fld).getNumericCellValue());
-                                        rounded = rounded.replace(".", "");
-                                        statement.setString(contador_fld, rounded);
-                                        break;
-                                    case BOOLEAN:
-                                        statement.setString(contador_fld, "Bool");
-                                        break;
-                                    default:
-                                        statement.setString(contador_fld, "str");
-                                        break;
+                                try {
+                                    switch (row.getCell(contador_fld).getCellTypeEnum()) {
+                                        case BLANK:
+                                            statement.setNull(contador_fld, java.sql.Types.NULL);
+                                            break;
+                                        case STRING:
+                                            String str = row.getCell(contador_fld).getStringCellValue();
+                                            statement.setString(contador_fld, row.getCell(contador_fld).getStringCellValue());
+                                            break;
+                                        case NUMERIC:
+                                            NumberFormat nf = NumberFormat.getNumberInstance();
+                                            nf.setMaximumFractionDigits(0);
+                                            String rounded = nf.format(row.getCell(contador_fld).getNumericCellValue());
+                                            rounded = rounded.replace(".", "");
+                                            statement.setString(contador_fld, rounded);
+                                            break;
+                                        case BOOLEAN:
+                                            statement.setString(contador_fld, "Bool");
+                                            break;
+                                        default:
+                                            statement.setString(contador_fld, "str");
+                                            break;
+                                    }
+                                } catch (Exception e) {
+                                    System.out.println("Error en la carga del valor del campo ");
+                                    System.out.println("Campo:" + contador_fld + "Fila:"+counter);
+                                    System.out.println(e.getMessage());
                                 }
                             } else {
                                 statement.setNull(contador_fld, java.sql.Types.NULL);
                             }
                         }
                         statement.execute();
-                        counter++;
                     } catch (SQLException ex) {
                         Logger.getLogger(Load_data.class.getName()).log(Level.SEVERE, null, ex);
+                        System.out.println("Fila numero:" + counter);
                         System.out.println(ex);
                     }
                 }
                 myWorkBook.close();
                 fis.close();
-                myFile.delete();
+                //myFile.delete();
                 sql = "CALL sp_update_generador_scripts();";
                 statement = connection.prepareStatement(sql);
                 statement.execute();
@@ -326,29 +329,67 @@ public class Load_data {
         return tokenResponse.getAccessToken();
     }
 
-
-    /**
-     * Funcion para actualizar los responsables
-     *
-     * @param connection_resp
-     * @param connection
-     */
-    public void actualizar_responsables(Connection connection_resp, Connection connection) {
+    public void actualizar_responsable(String rutaFile, Connection connection) {
         try {
-            String sql = "DELETE FROM responsable;";
-            PreparedStatement statement = connection.prepareStatement(sql);
-            statement.execute();
-            Statement stmt = connection_resp.createStatement();
-            sql = "SELECT ID_BENEFICIO,CONTACTO_RECTOR,TEL_RECTOR,CORREO_ELEC FROM mintic_rectores_escuelas;";
-            ResultSet rsResp = stmt.executeQuery(sql);
-            String sqlInsert = "";
-            while (rsResp.next()) {
-                sqlInsert = "insert into responsable(id_beneficiario,name_resp,phone,email) ";
-                sqlInsert += " select id_beneficiario,'" + rsResp.getString(2) + "' as Nombre,'" + rsResp.getString(3) + "' as telefono,'" + rsResp.getString(4) + "' as correo from centro_digital where id_beneficiario = '" + rsResp.getString(1) + "';";
-                statement = connection.prepareStatement(sqlInsert);
+            System.out.println("Procesando:" + rutaFile);
+            File myFile = new File(rutaFile);
+            if (myFile.exists()) {
+                String sql = "DELETE FROM tmp_responsable;";
+                PreparedStatement statement = connection.prepareStatement(sql);
                 statement.execute();
+                FileInputStream fis = new FileInputStream(myFile);
+                XSSFWorkbook myWorkBook = new XSSFWorkbook(fis);
+                XSSFSheet mySheet = myWorkBook.getSheetAt(0);
+                Iterator<Row> rowIterator = mySheet.iterator();
+                sql = "INSERT INTO tmp_responsable(id_beneficiario,name_resp,phone,email) VALUES(?,?,?,?);";
+                rowIterator.next();
+                while (rowIterator.hasNext()) {
+                    Row row = rowIterator.next();
+                    statement = connection.prepareStatement(sql);
+                    for (int contador_fld = 0; contador_fld <= 3; contador_fld++) {
+                        if (row.getCell(contador_fld) != null) {
+                            switch (row.getCell(contador_fld).getCellTypeEnum()) {
+                                case BLANK:
+                                    statement.setNull(contador_fld + 1, java.sql.Types.NULL);
+                                    break;
+                                case STRING:
+                                    statement.setString(contador_fld + 1, row.getCell(contador_fld).getStringCellValue());
+                                    break;
+                                case NUMERIC:
+                                    NumberFormat nf = NumberFormat.getNumberInstance();
+                                    nf.setMaximumFractionDigits(0);
+                                    String rounded = nf.format(row.getCell(contador_fld).getNumericCellValue());
+                                    rounded = rounded.replace(".", "");
+                                    rounded = rounded.replace(",", "");
+                                    statement.setString(contador_fld + 1, rounded);
+                                    break;
+                                case BOOLEAN:
+                                    statement.setString(contador_fld + 1, "");
+                                    break;
+                                default:
+                                    statement.setString(contador_fld + 1, "");
+                                    break;
+                            }                                                    
+                        }
+                        else{
+                            statement.setString(contador_fld + 1, "");
+                        }
+                    }
+                    statement.execute();
+                }
+                myWorkBook.close();
+                fis.close();
+                myFile.delete();
+                sql = "CALL sp_update_responsable();";
+                statement = connection.prepareStatement(sql);
+                statement.execute();
+                
             }
-        } catch (SQLException ex) {
+            else{
+               System.out.println("No exite el archivo" + rutaFile);
+            }
+        }
+        catch (SQLException | IOException ex) {
             Logger.getLogger(Load_data.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -391,6 +432,7 @@ public class Load_data {
                                     nf.setMaximumFractionDigits(0);
                                     String rounded = nf.format(row.getCell(contador_fld).getNumericCellValue());
                                     rounded = rounded.replace(".", "");
+                                    rounded = rounded.replace(",", "");
                                     statement.setString(contador_fld + 1, rounded);
                                     break;
                                 case BOOLEAN:
