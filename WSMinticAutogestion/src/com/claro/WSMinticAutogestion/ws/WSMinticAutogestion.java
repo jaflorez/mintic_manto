@@ -23,7 +23,7 @@ import com.claro.WSMinticAutogestion.controller.Controller;
 import com.claro.WSMinticAutogestion.json.SpeedTestResult;
 import com.claro.WSMinticAutogestion.vo.ResponsableVO;
 import com.claro.WSMinticAutogestion.json.CentroDigital;
-
+import com.claro.WSMinticAutogestion.json.ResponseOyM;
 import com.google.gson.Gson;
 
 /**
@@ -72,44 +72,13 @@ public class WSMinticAutogestion {
 	  json = gson.toJson(objCentro);
 	  return Response.status(201).entity(json).build();
 	}
-	
-	@POST
-	@Path("/closedProccessSpeedTest")
-	public Response cancelarSpeedTest (InputStream consulta)  {
-		  String json = "";
-		  SpeedTestResult objCallSpeedTest = new SpeedTestResult();
-		  
-		  try {
-			  InputStream input = this.context.getResourceAsStream("/WEB-INF/WSMinticAutoatencion.properties");
-			  Properties properties = new Properties();
-			  properties.load(input);
-			  BufferedReader rd = new BufferedReader(new InputStreamReader(consulta));
-			  JSONParser jp = new JSONParser();
-			  String line = "";
-			  String jsonRequest = "";
-			  while((line = rd.readLine()) != null){
-				  jsonRequest = jsonRequest+line.trim();
-			  }
-			  JSONObject jso = (JSONObject)jp.parse(jsonRequest);
-			  String user_id = jso.get("user_id").toString();
-			  String ap_id = jso.get("ap_id").toString();
-			  controller = new Controller(properties);
-			  try {
-				  controller.cancelarConsultaSpeeTest(user_id, ap_id);
-			  } catch (Exception e) {
-				  e.printStackTrace();
-			  }
-		  }
-		  catch (Exception e) {
-			  System.out.println("Exception: "+e.toString());
-			  e.printStackTrace();
-		  }
-		  Gson gson = new Gson();
-		  json = gson.toJson(objCallSpeedTest);
-		  return Response.status(201).entity(json).build();
-	}	
 	@POST
 	@Path("/consultaSpeedTest")
+	/**
+	 * EndPoin que implementa el test de velocidad
+	 * @param consulta {user_id,ap_id,fecha_solicitud}  / {usuario de la app/ap_id codigo asignado por gestionate/fecha en la que se realiza la solicitud}
+	 * @return
+	 */
 	public Response consultaSpeedTest (InputStream consulta)  {
 	  String json = "";
 	  SpeedTestResult objCallSpeedTest = new SpeedTestResult();
@@ -145,6 +114,7 @@ public class WSMinticAutogestion {
 	  json = gson.toJson(objCallSpeedTest);
 	  return Response.status(201).entity(json).build();
 	}
+	
 	@POST
 	@Path("/consultaResponsables")
 	public Response consultaResponsable (InputStream idConsulta)  {
@@ -181,24 +151,16 @@ public class WSMinticAutogestion {
 	}
 	
 	@POST
-	@Path("/eliminarResponsable")
+	@Path("/guardarResponsable")
 	public Response eliminarResponsable (InputStream idConsulta)  {
 		return null;
 	}
 	
 	@POST
-	@Path("/modificarResponsable")
+	@Path("/eliminarResponsable")
 	public Response modificarResponsable (InputStream idConsulta)  {
 		return null;
 	}
-	
-	@POST
-	@Path("/crearResponsable")
-	public Response crearResponsable (InputStream idConsulta)  {
-		return null;
-	}
-	
-	
 	
 
 }

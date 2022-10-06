@@ -159,7 +159,7 @@ public class Controller {
     	try {
         	Connection connection = minticDAO.getConnection(this.properties.getProperty("DB_STR_CONNECTION"),this.properties.getProperty("DB_USER"),this.properties.getProperty("DB_PWD"));
         	CallSpeedTestDAO callSpeedTestDAO = new CallSpeedTestDAO(connection);
-        	callSpeedTestDAO.UpdateCallSpeedTestVO(user_id, ap_id, "cancelada");
+        	callSpeedTestDAO.UpdateCallSpeedTestRegistro(user_id, ap_id, "cancelada");
 		} catch (Exception e) {
 			System.err.println("Error en el proceso" );
 			System.err.println(e);
@@ -174,6 +174,7 @@ public class Controller {
     	try {
         	Connection connection = minticDAO.getConnection(this.properties.getProperty("DB_STR_CONNECTION"),this.properties.getProperty("DB_USER"),this.properties.getProperty("DB_PWD"));
         	CallSpeedTestDAO callSpeedTestDAO = new CallSpeedTestDAO(connection);
+        	callSpeedTestDAO.CancelarSolicitudesVencidas(Integer.parseInt(this.properties.getProperty("SEGUNDOS_ESPERA_SPEED_TEST")));
         	CallSpeedTestVO callSpeedTestVo = callSpeedTestDAO.FindByUserApid(user_id, ap_id);
         	if(callSpeedTestVo == null) {/*No existe una solicitud pendiente*/
         		ConsultaSoapUtil consultaSoapUtil = new ConsultaSoapUtil();
@@ -196,7 +197,7 @@ public class Controller {
             		if(stResultsVO != null) {
             			speedTestResult =  new SpeedTestResult(user_id,ap_id,"listo",fecha_solicitud_ft);
             			speedTestResult.setStResultVO(stResultsVO);
-            			callSpeedTestDAO.UpdateCallSpeedTestVO(user_id, ap_id, "listo"); 
+            			callSpeedTestDAO.UpdateCallSpeedTestRegistro(user_id, ap_id, "listo"); 
             		}
             		else {
             			speedTestResult =  new SpeedTestResult(user_id,ap_id,"corriendo",fecha_solicitud_ft);

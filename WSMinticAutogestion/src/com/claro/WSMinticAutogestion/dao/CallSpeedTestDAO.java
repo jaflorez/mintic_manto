@@ -39,16 +39,16 @@ public class CallSpeedTestDAO {
 		
 		
 	}
-	public void cerrarSpeedTestByUserApid(String user_id,String ap_id) {
+	public void CancelarSolicitudesVencidas(int segundos ) {
+		
 		PreparedStatement preparedStatement = null;
 		try {
-			String sql = "update speed_test_call set estado = ? where usuario=? and ap_id = ?";
+			String sql = "update speed_test_call set estado = 'cancelada' where TIMESTAMPDIFF(SECOND,fecha,sysdate()) > ? and estado='registro'";
 			preparedStatement = this.connection.prepareStatement(sql);
-			preparedStatement.setString(2, user_id);
-			preparedStatement.setString(3, ap_id);
+			preparedStatement.setInt(1, segundos);
 			preparedStatement.executeUpdate();
 		} catch (Exception e) {
-			System.out.println("CallSpeedTestDAO Find By Id err: "+e.toString());
+			System.out.println("CancelarSolicitudesVencidas err: "+e.toString());
 		}
 		
 		
@@ -82,10 +82,10 @@ public class CallSpeedTestDAO {
 		}
 		return callSpeedTest;
 	}
-	public void UpdateCallSpeedTestVO(String user_id,String ap_id,String estado) {
+	public void UpdateCallSpeedTestRegistro(String user_id,String ap_id,String estado) {
 		PreparedStatement preparedStatement = null;
 		try {
-			String sql = "update speed_test_call set estado = ? where usuario=? and ap_id = ? and ";
+			String sql = "update speed_test_call set estado = ? where usuario=? and ap_id = ? and estado= 'registro' ";
 			preparedStatement = this.connection.prepareStatement(sql);
 			preparedStatement.setString(1, estado);
 			preparedStatement.setString(2, user_id);

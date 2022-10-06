@@ -35,18 +35,16 @@ public class ConsultaSoapUtil {
 	}
 	public CallSpeedTestVO llamar_speed_test(String url_speed_test,String mail_speed_test,String ap_id) {
 		CallSpeedTestVO callSpeedTestVo = null;
-		//RunSpeedTestOnDemandWorkflowSoapProxy workflowSoapProxy = new RunSpeedTestOnDemandWorkflowSoapProxy(url_speed_test);
+		RunSpeedTestOnDemandWorkflowSoapProxy workflowSoapProxy = new RunSpeedTestOnDemandWorkflowSoapProxy(url_speed_test);
 		int apid = Integer.parseInt(ap_id);
 		int APListIDs[] = {apid};
-		callSpeedTestVo = new CallSpeedTestVO(ap_id,"TMP01","registro");
-	//	TrackingIDAndProcessID processID;
-//		try {
-//			processID = workflowSoapProxy.executeAndReturnPID(APListIDs, mail_speed_test);
-//			callSpeedTestVo = new CallSpeedTestVO(ap_id,processID.getProcessID(),"registro");
-//		} catch (RemoteException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+	    TrackingIDAndProcessID processID;
+		try {
+			processID = workflowSoapProxy.executeAndReturnPID(APListIDs, mail_speed_test);
+			callSpeedTestVo = new CallSpeedTestVO(ap_id,processID.getProcessID(),"registro");
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
 		return callSpeedTestVo;
 	}
 	

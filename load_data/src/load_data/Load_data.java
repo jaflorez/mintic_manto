@@ -76,10 +76,10 @@ public class Load_data {
                 load_data.load_consolidado(ruta_carga + "//CONSOLIDADO.xlsx", con);
                 load_data.actualizar_radios_switch_cnmaestro(ruta_carga + "//cnMaestro-device.xlsx", con);
                 load_data.actualizar_responsable(ruta_carga + "//responsable.xlsx", con);
-//                String[] tokens = load_data.generar_tokens(prop);
-//                load_data.actualizar_ap(tokens[1], prop.getProperty("URL_AP1_LST"), 1, con);
-//                load_data.actualizar_ap(tokens[2], prop.getProperty("URL_AP2_LST"), 2, con);
-//                load_data.actualizar_aps(con);
+                String[] tokens = load_data.generar_tokens(prop);
+                load_data.actualizar_ap(tokens[1], prop.getProperty("URL_AP1_LST"), 1, con);
+                load_data.actualizar_ap(tokens[2], prop.getProperty("URL_AP2_LST"), 2, con);
+                load_data.actualizar_aps(con);
             }
             System.out.println("---- Fin --- ");
         } catch (SQLException ex) {
