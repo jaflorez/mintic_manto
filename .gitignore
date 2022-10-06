@@ -2,3 +2,6 @@
 /build/
 /WSMinticAutogestion/build/
 /files/tokens.txt
+/WSMinticAutogestion/.settings/
+*.classpath
+*.project
